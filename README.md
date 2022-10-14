@@ -7,12 +7,15 @@ LMS similar to google classroom but a free version
 
 ###### Open the .sol file from visual studio
 
-###### Setup database
-Open Tools > Package Manager Console
 
-- Write
-  - add-migration SecondMigration -Context DataContext
-  - Update-Database
+###### Setup database
+- Downlaod Microsoft.*.SQL Server from NuGet Packages 
+- Setup
+  - Open Tools > Package Manager Console
+
+    - Write
+      - add-migration SecondMigration -Context DataContext
+      - Update-Database
 
 
 
