@@ -8,10 +8,14 @@ namespace LMSApi2.Helpers
         public DbSet<User>? Users { get; set; }
         public DbSet<Course> Courses { get; set; }
 
-        public DbSet<UserCourse> UsersCourses { get; set; }
+        //public DbSet<UserCourse> UsersCourses { get; set; }
 
-        public DbSet<Instructor> Instructors { get; set; }
-        public DbSet<Instructor_Course> InstructorCourses { get; set; }
+       // public DbSet<Instructor> Instructors { get; set; }
+        //public DbSet<Instructor_Course> InstructorCourses { get; set; }
+
+        public DbSet<Classes> _Classes { get; set; }
+        public DbSet<SubmissionFile> SubmissionFile { get; set; }
+        //public DbSet<StudentClasses> studentsClasses {get;set;}
 
 
         private readonly IConfiguration Configuration;
@@ -29,7 +33,8 @@ namespace LMSApi2.Helpers
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            //modelBuilder.Entity<StudentClasses>().HasKey(sc => new { sc.StudentId, sc.ClassID });
+          
             base.OnModelCreating(modelBuilder);
         }
     }

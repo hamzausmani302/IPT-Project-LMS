@@ -17,7 +17,7 @@ namespace LMSApi2.DTOS.Users
             Id = user.UserId;
             FirstName = user.FirstName;
             LastName = user.LastName;
-            Username = user.Username;
+           
             Role = user.Role;
             Token = token;
         }

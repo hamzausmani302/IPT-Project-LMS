@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMSApi2.Models
 {
+    public enum FacultyType { 
+        Visiting,
+        Permanent
+    }
+
     [Table("Instructor")]
     public class Instructor
     {
@@ -14,6 +19,9 @@ namespace LMSApi2.Models
 
         public string? PasswordHash { get; set; }
 
-        public List<Instructor_Course> InstructorCourses { get; set; }
+        public FacultyType FacultyType { get; set; }
+
+
+        public virtual List<Classes> InstructorClasses { get; set; }
     }
 }

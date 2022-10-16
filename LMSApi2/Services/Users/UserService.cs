@@ -24,7 +24,7 @@ namespace LMSApi2.Services.Users
         
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _context.Users.SingleOrDefault(x => x.Username == model.Username);
+            var user = _context.Users.SingleOrDefault(x => x.Email == model.Username);
 
             // validate
             if (user == null || user.PasswordHash != "password")

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMSApi2.Models;
+using LMSApi2.DTOS;
 
 namespace LMSApi2.Controllers
 {
@@ -18,9 +19,12 @@ namespace LMSApi2.Controllers
 
         [HttpGet("[action]")]
         public IActionResult Get() {
-            _service.addInstructor(new Instructor() { Id = "t1", Name = "munawwar fazal", UserName = "MunawwarFazal021", PasswordHash = "password" });
+            //_service.addInstructor(new Instructor() { Id = "t1", Name = "munawwar fazal", UserName = "MunawwarFazal021", PasswordHash = "password" });
 
-            return Ok();
+            //IEnumerable<Instructor> instrucutors = _service.GetInstructors();
+            List<SubmissionFile> user = _service.Test();
+            
+            return Ok(user);
 
         }
 
