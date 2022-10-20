@@ -207,7 +207,6 @@ namespace LMSApi2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -311,9 +310,7 @@ namespace LMSApi2.Migrations
 
                     b.HasOne("LMSApi2.Models.User", "User")
                         .WithMany("SubmissionFiles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Announcement");
 

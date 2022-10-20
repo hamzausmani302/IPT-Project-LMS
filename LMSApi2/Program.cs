@@ -1,4 +1,5 @@
 using LMSApi2.Authorization;
+
 using LMSApi2.Helpers;
 using LMSApi2.Services.Teachers;
 using LMSApi2.Services.Users;
@@ -47,7 +48,18 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseMiddleware<JWTMiddleware>();
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/user"), appbuilder =>
+{
+    appbuilder.UseMiddleware<LMSApi2.Authorization.AuthorizationUser.JWTMiddleware>();
+});
+
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/teacher"), appbuilder =>
+{
+/*    appbuilder.UseMiddleware<LMSApi2.Authorization.AuthorizationTeacher.JWTMiddleWare>();*/
+});
+
 app.MapControllers();
 
 app.Run();

@@ -10,7 +10,7 @@ namespace LMSApi2.Helpers
 
         //public DbSet<UserCourse> UsersCourses { get; set; }
 
-       // public DbSet<Instructor> Instructors { get; set; }
+       public DbSet<Instructor> Instructor { get; set; }
         //public DbSet<Instructor_Course> InstructorCourses { get; set; }
 
         public DbSet<Classes> _Classes { get; set; }
@@ -34,7 +34,45 @@ namespace LMSApi2.Helpers
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<StudentClasses>().HasKey(sc => new { sc.StudentId, sc.ClassID });
-          
+            modelBuilder.Entity<User>().HasData(
+               new User
+               {
+                   UserId="k190146",
+                   Batch= 2021,
+                   Email="hamza@gmail.com",
+                   FirstName="hamza",
+                   LastName="usmani",
+                   PasswordHash="password",
+                   Role=Role.User,
+                   
+               });
+
+            modelBuilder.Entity<User>().HasData(
+               new User
+               {
+                   UserId = "k190220",
+                   Batch = 2022,
+                   Email = "k190220@=nu.edu.pk",
+                   FirstName = "ibad",
+                   LastName = "saleem",
+                   PasswordHash = "password",
+                   Role = Role.User,
+
+               }
+   );
+            modelBuilder.Entity<User>().HasData(
+               new User
+               {
+                   UserId = "k190121",
+                   Batch = 2021,
+                   Email = "test@gmail.com",
+                   FirstName = "Test",
+                   LastName = "test",
+                   PasswordHash = "password",
+                   Role = Role.User,
+               }
+   );
+
             base.OnModelCreating(modelBuilder);
         }
     }

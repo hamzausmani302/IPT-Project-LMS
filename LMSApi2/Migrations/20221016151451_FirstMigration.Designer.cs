@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMSApi2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221016134200_Initial")]
-    partial class Initial
+    [Migration("20221016151451_FirstMigration")]
+    partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -209,7 +209,6 @@ namespace LMSApi2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -313,9 +312,7 @@ namespace LMSApi2.Migrations
 
                     b.HasOne("LMSApi2.Models.User", "User")
                         .WithMany("SubmissionFiles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Announcement");
 
