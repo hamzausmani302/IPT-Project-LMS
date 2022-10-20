@@ -1,4 +1,5 @@
 ﻿using LMSApi2.DTOS;
+using LMSApi2.DTOS.Instructor;
 using LMSApi2.Helpers;
 using LMSApi2.Models;
 using Microsoft.EntityFrameworkCore;
@@ -13,14 +14,14 @@ namespace LMSApi2.Services.Teachers
             _dataContext = context;    
         
         }
-        public Instructor addInstructor(Instructor instructor)
-        {
-            _dataContext.Add(instructor);
-            _dataContext.SaveChanges();
+        //public Instructor addInstructor(Instructor instructor)
+        //{
+        //    _dataContext.Add(instructor);
+        //    _dataContext.SaveChanges();
 
 
-            return instructor;
-        }
+        //    return instructor;
+        //}
 
         public List<SubmissionFile> Test()
         {
@@ -30,8 +31,6 @@ namespace LMSApi2.Services.Teachers
             Console.WriteLine(user.SubmissionFiles.Count);
             return user.SubmissionFiles;
             
-            
-
         }
         /*  public IEnumerable<Instructor> GetInstructors()
           {
@@ -64,5 +63,65 @@ namespace LMSApi2.Services.Teachers
              }
              return dat;
          }*/
+        public Instructor addInstructor(TeacherAuthReq obj)
+        {
+            Instructor objInstruct = new Instructor()
+            {
+                //Id = new Guid(),
+                //Name = _instructor.Name,
+                //UserName = _instructor.UserName,
+                //PasswordHash = _instructor.PasswordHash,
+                //InstructorCourses = _instructor.InstructorCourses
+                Id = new Guid(),
+                UserName = obj.Name,
+                PasswordHash = "password",
+
+
+            };
+            Console.WriteLine(objInstruct.UserName);
+            _dataContext.Instructors.Add(objInstruct);
+            //_dataContext.Instructors.SaveChanges();
+
+
+            return objInstruct;
+        }
+        public bool removeInstructor(Guid id)
+        {
+
+            var instructor_found = _dataContext.Instructors.Find(id);
+            if (instructor_found != null)
+            {
+                _dataContext.Instructors.Remove(instructor_found);
+                return true;
+            }
+            else
+                return false;
+        }
+        public Instructor updateInstructor(Instructor instructor)
+        {
+            Instructor objInstruct = _dataContext.Instructors.Find(instructor.Id);
+            if (objInstruct != null)
+            {
+                objInstruct.Id = instructor.Id;
+                objInstruct.Name = instructor.Name;
+                objInstruct.UserName = instructor.UserName;
+                objInstruct.PasswordHash = instructor.PasswordHash;
+                _dataContext.Instructors.Update(objInstruct);
+            }
+
+            return instructor;
+        }
+        public Instructor GetInstructor(Guid _id)
+        {
+            Instructor _instructor = _dataContext.Instructors.FirstOrDefault(x => x.Id == _id);
+
+            return _instructor;
+
+        }
+        public IEnumerable<Instructor> GetInstructors()
+        {
+            var _instructors = _dataContext.Instructors.ToList();
+            return _instructors;
+        }
     }
 }

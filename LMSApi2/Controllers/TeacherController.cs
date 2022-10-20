@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMSApi2.Models;
-using LMSApi2.DTOS;
+using LMSApi2.DTOS.Instructor;
 
 namespace LMSApi2.Controllers
 {
@@ -26,6 +26,42 @@ namespace LMSApi2.Controllers
             
             return Ok(user);
 
+        }
+        [HttpGet("[action]")]
+        public IActionResult GetInstructor(Guid id)
+        {
+
+            var _instructor = _service.GetInstructor(id);
+            return Ok();
+
+        }
+        [HttpPost("[action]")]
+        public IActionResult AddInstructor(TeacherAuthReq obj)
+        {
+            
+                _service.addInstructor(obj);
+
+                return Ok(obj);
+            
+
+        }
+        [HttpPost("[action]")]
+        public IActionResult RemoveInstructor(Guid _id)
+        {
+            _service.removeInstructor(_id);
+            return Ok();
+        }
+        [HttpPost("[action]")]
+        public IActionResult UpdateInstructor(Instructor _instructor)
+        {
+            _service.updateInstructor(_instructor);
+            return Ok();
+        }
+        [HttpGet("[action]")]
+        public IActionResult GetAllInstructors()
+        {
+            var instructors = _service.GetInstructors();
+            return Ok();
         }
 
     }

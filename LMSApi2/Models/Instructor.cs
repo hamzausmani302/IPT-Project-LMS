@@ -12,7 +12,7 @@ namespace LMSApi2.Models
     public class Instructor
     {
         [Key]
-        public string? Id { get; set; }
+        public Guid? Id { get; set; }
         public string? Name { get; set; }
 
         public string? UserName { get; set; }

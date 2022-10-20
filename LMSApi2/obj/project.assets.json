@@ -2527,19 +2527,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\DARK VADER\\.nuget\\packages\\": {}
+    "C:\\Users\\User\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\dotnet work\\LMSApi2\\LMSApi2\\LMSApi2.csproj",
+      "projectUniqueName": "D:\\SEM7\\IPT\\IPTProject\\IPT-Project-LMS\\LMSApi2\\LMSApi2.csproj",
       "projectName": "LMSApi2",
-      "projectPath": "E:\\dotnet work\\LMSApi2\\LMSApi2\\LMSApi2.csproj",
-      "packagesPath": "C:\\Users\\DARK VADER\\.nuget\\packages\\",
-      "outputPath": "E:\\dotnet work\\LMSApi2\\LMSApi2\\obj\\",
+      "projectPath": "D:\\SEM7\\IPT\\IPTProject\\IPT-Project-LMS\\LMSApi2\\LMSApi2.csproj",
+      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+      "outputPath": "D:\\SEM7\\IPT\\IPTProject\\IPT-Project-LMS\\LMSApi2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\DARK VADER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2611,7 +2611,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }
