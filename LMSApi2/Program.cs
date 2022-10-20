@@ -1,5 +1,9 @@
 using LMSApi2.Authorization;
 
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using LMSApi2.Helpers;
 using LMSApi2.Services.Teachers;
 using LMSApi2.Services.Users;
