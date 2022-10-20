@@ -1,4 +1,4 @@
-﻿namespace LMSApi2.Authorization
+﻿namespace LMSApi2.Authorization.AuthorizationAnonymous
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class AllowAnonymousAttribute : Attribute

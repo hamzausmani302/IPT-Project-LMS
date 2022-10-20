@@ -10,7 +10,7 @@ namespace LMSApi2.Helpers
 
         //public DbSet<UserCourse> UsersCourses { get; set; }
 
-       // public DbSet<Instructor> Instructors { get; set; }
+       public DbSet<Instructor> Instructor { get; set; }
         //public DbSet<Instructor_Course> InstructorCourses { get; set; }
 
         public DbSet<Classes> _Classes { get; set; }

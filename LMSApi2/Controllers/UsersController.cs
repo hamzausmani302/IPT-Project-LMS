@@ -1,4 +1,5 @@
-﻿using LMSApi2.Authorization;
+﻿using LMSApi2.Authorization.AuthorizationUser;
+using LMSApi2.Authorization.AuthorizationAnonymous;
 using LMSApi2.DTOS.Users;
 using LMSApi2.Models;
 using LMSApi2.Services.Users;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LMSApi2.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/user/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -33,9 +34,11 @@ namespace LMSApi2.Controllers
         
         }
 
+        [AllowAnonymous]
         [HttpPost("[action]")]
         public IActionResult Login(AuthenticateRequest request) {
             var response = _userService.Authenticate(request);
+            
             return Ok(response);
         }
 
@@ -44,7 +47,7 @@ namespace LMSApi2.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(string id)
         {
-            // only admins can access other user records
+            // only admins can access other user recordss
             var currentUser = (User)HttpContext.Items["User"];
             if (id != currentUser.UserId && currentUser.Role != Role.Admin)
                 return Unauthorized(new { message = "Unauthorized" });

@@ -28,7 +28,7 @@ namespace LMSApi2.Services.Users
 
             // validate
             if (user == null || user.PasswordHash != "password")
-                throw new AppException("Username or password is incorrect");
+                throw new NotFoundException(ErrorMessages.dict[ERROR_TYPES.WRONG_CREDENTIALS]);
 
             // authentication successful so generate jwt token
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
@@ -38,7 +38,7 @@ namespace LMSApi2.Services.Users
 
         public IEnumerable<User> GetAll()
         {
-            return  _context.Users;
+            return  _context.Users.Where(el => (1==1));
         }
 
         public User GetById(string id)

@@ -1,6 +1,9 @@
-﻿using LMSApi2.DTOS;
+﻿using LMSApi2.Authorization;
+using LMSApi2.DTOS;
+using LMSApi2.DTOS.Instructors;
 using LMSApi2.Helpers;
 using LMSApi2.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMSApi2.Services.Teachers
@@ -8,28 +11,43 @@ namespace LMSApi2.Services.Teachers
     public class InstructorService : IInstructorService
     {
         private readonly DataContext _dataContext;
+        private readonly IJwtUtils _jwtUtils;
         
-        public InstructorService(DataContext context) {
-            _dataContext = context;    
+        public InstructorService(DataContext context , IJwtUtils jwtUtils ) {
+            _dataContext = context;
+            jwtUtils = jwtUtils;
         
         }
         public Instructor addInstructor(Instructor instructor)
         {
-            _dataContext.Add(instructor);
+            _dataContext.Instructor.Add(instructor);
             _dataContext.SaveChanges();
 
 
             return instructor;
         }
 
+        public AuthenticateResponseInstructor AuthenticateLogin(AuthenticateRequestInstructor request)
+        {
+            var _instructor = _dataContext.Instructor.Where(ins => (ins.UserName == request.username)).First();
+            // validate
+            if (_instructor == null || _instructor.PasswordHash != request.password)
+                throw new NotFoundException(ErrorMessages.dict[ERROR_TYPES.WRONG_CREDENTIALS]);
+
+            // authentication successful so generate jwt token
+            //var jwtToken = _jwtUtils.GenerateJWTTokenTeacher(_instructor);
+
+            return new AuthenticateResponseInstructor(_instructor, "tpken");
+        }
+
+
+        
         public List<SubmissionFile> Test()
         {
+            _dataContext.Instructor.Add(new Instructor() { Id = "t002", FacultyType = FacultyType.Visiting, Name = "hamza", PasswordHash = "password", UserName = "username" });
 
-            User user = _dataContext.Users.Where(el => (el.UserId == "k190146")).Include(b=>b.SubmissionFiles).First();
-            //List<SubmissionFile> files = _dataContext.SubmissionFile.Where(f => f.StudentId == user.UserId).ToList();
-            Console.WriteLine(user.SubmissionFiles.Count);
-            return user.SubmissionFiles;
-            
+            _dataContext.SaveChanges();
+            return new List<SubmissionFile>();
             
 
         }
