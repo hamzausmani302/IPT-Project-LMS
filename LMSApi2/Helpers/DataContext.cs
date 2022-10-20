@@ -28,7 +28,7 @@ namespace LMSApi2.Helpers
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // in memory database used for simplicity, change to a real db for production applications
-            options.UseSqlServer(Configuration.GetConnectionString("Default"));
+            options.UseSqlServer(Configuration.GetConnectionString("RemoteServer"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
