@@ -45,9 +45,12 @@ namespace LMSApi2.Services.Teachers
         
         public List<SubmissionFile> Test()
         {
-            _dataContext.Instructor.Add(new Instructor() { Id = "t002", FacultyType = FacultyType.Visiting, Name = "hamza", PasswordHash = "password", UserName = "username" });
+            List<ClassesUser> cu = _dataContext.ClassesUsers.Where(el => 1==1).ToList() ;
+            
 
-            _dataContext.SaveChanges();
+           /* _dataContext.Instructor.Add(new Instructor() { Id = "t002", FacultyType = FacultyType.Visiting, Name = "hamza", PasswordHash = "password", UserName = "username" });
+
+            _dataContext.SaveChanges();*/
             return new List<SubmissionFile>();
             
 
