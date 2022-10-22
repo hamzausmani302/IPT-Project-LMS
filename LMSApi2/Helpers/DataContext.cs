@@ -44,6 +44,8 @@ namespace LMSApi2.Helpers
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<ClassesUser>().HasNoKey();
             //modelBuilder.Entity<StudentClasses>().HasKey(sc => new { sc.StudentId, sc.ClassID });
             modelBuilder.Entity<User>().HasData(
                new User
