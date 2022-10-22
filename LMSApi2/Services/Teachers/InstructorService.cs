@@ -15,7 +15,7 @@ namespace LMSApi2.Services.Teachers
         
         public InstructorService(DataContext context , IJwtUtils jwtUtils ) {
             _dataContext = context;
-            jwtUtils = jwtUtils;
+            _jwtUtils = jwtUtils;
         
         }
         public Instructor addInstructor(Instructor instructor)
@@ -29,15 +29,16 @@ namespace LMSApi2.Services.Teachers
 
         public AuthenticateResponseInstructor AuthenticateLogin(AuthenticateRequestInstructor request)
         {
-            var _instructor = _dataContext.Instructor.Where(ins => (ins.UserName == request.username)).First();
+            var _instructor = _dataContext.Instructor.Where(ins => (ins.UserName == request.username)).FirstOrDefault();
             // validate
             if (_instructor == null || _instructor.PasswordHash != request.password)
                 throw new NotFoundException(ErrorMessages.dict[ERROR_TYPES.WRONG_CREDENTIALS]);
 
             // authentication successful so generate jwt token
-            //var jwtToken = _jwtUtils.GenerateJWTTokenTeacher(_instructor);
+            
+            var jwtToken = _jwtUtils.GenerateJWTTokenTeacher(_instructor);
 
-            return new AuthenticateResponseInstructor(_instructor, "tpken");
+            return new AuthenticateResponseInstructor(_instructor,jwtToken);
         }
 
 
@@ -49,6 +50,13 @@ namespace LMSApi2.Services.Teachers
             _dataContext.SaveChanges();
             return new List<SubmissionFile>();
             
+
+        }
+
+        public Instructor getInstructorById(string userId) {
+
+            return _dataContext.Instructor.Find(userId);
+
 
         }
         /*  public IEnumerable<Instructor> GetInstructors()

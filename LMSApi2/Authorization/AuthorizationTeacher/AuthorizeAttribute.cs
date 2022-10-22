@@ -22,13 +22,12 @@ namespace LMSApi2.Authorization.AuthorizationTeacher
             if (allowAnonymous)
                 return;
 
-           /* var user = (User)context.HttpContext.Items["User"];
-            *//* || (_roles.Any() && !_roles.Contains(user.Role)*//*
-            if (user == null)
-            {
-
+            var instructor = context.HttpContext.Items["Instructor"] as Instructor;
+            if (instructor == null) {
                 context.Result = new JsonResult(new { message = "Unauthroized" }) { StatusCode = StatusCodes.Status401Unauthorized };
-            }*/
+            }
+
+       
         }
     }
 }

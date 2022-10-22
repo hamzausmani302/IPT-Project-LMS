@@ -15,7 +15,6 @@ namespace LMSApi2.Controllers
     {
         private IUserService _userService;
         public UsersController(IUserService userService) {
-
             _userService = userService;
         }
 
@@ -41,6 +40,7 @@ namespace LMSApi2.Controllers
             
             return Ok(response);
         }
+
 
        
 

@@ -37,7 +37,7 @@ var app = builder.Build();
         .AllowAnyHeader());
 
     // global error handler
-    //app.UseMiddleware<ErrorHandlerMiddleware>();
+    app.UseMiddleware<ErrorHandlerMiddleware>();
 
     // custom jwt auth middleware
 
@@ -61,7 +61,7 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/user"), app
 
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/teacher"), appbuilder =>
 {
-/*    appbuilder.UseMiddleware<LMSApi2.Authorization.AuthorizationTeacher.JWTMiddleWare>();*/
+    appbuilder.UseMiddleware<LMSApi2.Authorization.AuthorizationTeacher.JWTMiddleWare>();
 });
 
 app.MapControllers();

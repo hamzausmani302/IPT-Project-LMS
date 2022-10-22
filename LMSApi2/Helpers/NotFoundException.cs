@@ -7,7 +7,7 @@ namespace LMSApi2.Helpers
         
         public NotFoundException(string message="Not found") : base(message ) {
            
-            
+         
         }
         public NotFoundException(string message, params object[] args)
            : base(String.Format(CultureInfo.CurrentCulture, message, args))
