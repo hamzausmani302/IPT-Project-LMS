@@ -5,17 +5,22 @@ using LMSApi2.Models;
 using LMSApi2.Services.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using LMSApi2.Services.ClassServices;
 
 namespace LMSApi2.Controllers
 {
-    [Authorize]
+   
     [Route("api/user/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
-        public UsersController(IUserService userService) {
+        private readonly IUserService _userService;
+        private readonly IClassService _classService;
+        private readonly ILogger<User> logger;
+        public UsersController(IUserService userService, IClassService classService , ILogger<User> logger) {
             _userService = userService;
+            this.logger = logger;
+            _classService = classService;
         }
 
         [AllowAnonymous]
@@ -55,5 +60,8 @@ namespace LMSApi2.Controllers
             var user = _userService.GetById(id);
             return Ok(user);
         }
+
+        //[Authorize]
+        
     }
 }

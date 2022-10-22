@@ -16,19 +16,27 @@ namespace LMSApi2.Helpers
         public DbSet<Classes> _Classes { get; set; }
         public DbSet<SubmissionFile> SubmissionFile { get; set; }
         //public DbSet<StudentClasses> studentsClasses {get;set;}
-
+        public DbSet<ClassesUser> ClassesUsers { get; set; }
 
         private readonly IConfiguration Configuration;
+        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment environment;
 
-        public DataContext(IConfiguration configuration)
+        public DataContext(IConfiguration configuration , Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
             Configuration = configuration;
+            environment = env;
+           
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // in memory database used for simplicity, change to a real db for production applications
-            options.UseSqlServer(Configuration.GetConnectionString("RemoteServer"));
+            string serverAlias = "Default";
+            if (!environment.IsDevelopment()) {
+                serverAlias = "RemoteServer";
+            }
+            
+            options.UseSqlServer(Configuration.GetConnectionString(serverAlias));
 
 
 
@@ -87,6 +95,8 @@ namespace LMSApi2.Helpers
                     PasswordHash="password"
                 }
                 );
+
+       
             base.OnModelCreating(modelBuilder);
         }
     }
