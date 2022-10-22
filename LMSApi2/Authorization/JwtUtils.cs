@@ -28,8 +28,9 @@ namespace LMSApi2.Authorization
         }
 
         public string GenerateJWTTokenTeacher(Instructor instructor) {
+            Console.WriteLine("checkpoint");
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_appSettings.TeacherSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", instructor.Id.ToString()) , new Claim("identity" , "teacher") }),
@@ -62,7 +63,7 @@ namespace LMSApi2.Authorization
                 return null;
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_appSettings.TeacherSecret);
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -78,7 +79,9 @@ namespace LMSApi2.Authorization
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 string userId = jwtToken.Claims.First(x => x.Type == "id").Value;
                 string role = jwtToken.Claims.Where(x => x.Type == "identity").First().Value;
-                Console.WriteLine("roleTEacher" +role);
+                if (role != "teacher") { 
+                    return null;
+                }
                 // return user id from JWT token if validation successful
                 return userId;
             }

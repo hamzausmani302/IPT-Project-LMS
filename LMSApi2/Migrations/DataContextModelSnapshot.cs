@@ -178,6 +178,16 @@ namespace LMSApi2.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Instructor");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "t003",
+                            FacultyType = 0,
+                            Name = "murtaza fazal",
+                            PasswordHash = "password",
+                            UserName = "murtazafazal"
+                        });
                 });
 
             modelBuilder.Entity("LMSApi2.Models.SubmissionFile", b =>
@@ -244,6 +254,38 @@ namespace LMSApi2.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "k190146",
+                            Batch = 2021,
+                            Email = "hamza@gmail.com",
+                            FirstName = "hamza",
+                            LastName = "usmani",
+                            PasswordHash = "password",
+                            Role = 1
+                        },
+                        new
+                        {
+                            UserId = "k190220",
+                            Batch = 2022,
+                            Email = "k190220@=nu.edu.pk",
+                            FirstName = "ibad",
+                            LastName = "saleem",
+                            PasswordHash = "password",
+                            Role = 1
+                        },
+                        new
+                        {
+                            UserId = "k190121",
+                            Batch = 2021,
+                            Email = "test@gmail.com",
+                            FirstName = "Test",
+                            LastName = "test",
+                            PasswordHash = "password",
+                            Role = 1
+                        });
                 });
 
             modelBuilder.Entity("ClassesUser", b =>

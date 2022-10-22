@@ -15,6 +15,7 @@ namespace LMSApi2.Services.Teachers
 
         public AuthenticateResponseInstructor AuthenticateLogin(AuthenticateRequestInstructor request);
 
+        public Instructor getInstructorById(string? userId);
 
     }
 }

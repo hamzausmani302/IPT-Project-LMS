@@ -2,6 +2,7 @@
 using LMSApi2.DTOS.Users;
 using LMSApi2.Helpers;
 using LMSApi2.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace LMSApi2.Services.Users
@@ -24,10 +25,10 @@ namespace LMSApi2.Services.Users
         
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _context.Users.SingleOrDefault(x => x.Email == model.Username);
+            var user = _context.Users.Where(el => model.Username == el.UserId).FirstOrDefault();
 
-            // validate
-            if (user == null || user.PasswordHash != "password")
+            // validates
+            if (user == null || user.PasswordHash != model.Password)
                 throw new NotFoundException(ErrorMessages.dict[ERROR_TYPES.WRONG_CREDENTIALS]);
 
             // authentication successful so generate jwt token

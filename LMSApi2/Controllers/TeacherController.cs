@@ -25,10 +25,9 @@ namespace LMSApi2.Controllers
 
         [HttpPost("[action]")]
         public IActionResult Login(AuthenticateRequestInstructor req) {
-            string username = "mfazal";
-            string password = "password";
+            
 
-            AuthenticateRequestInstructor request = new AuthenticateRequestInstructor() { username=username , password=password };
+            AuthenticateRequestInstructor request = new AuthenticateRequestInstructor() { username=req.username , password=req.password };
             logger.LogInformation("started");
             AuthenticateResponseInstructor instructorResponse = _service.AuthenticateLogin(request);
             Console.WriteLine("testing login");
@@ -41,9 +40,9 @@ namespace LMSApi2.Controllers
             //_service.addInstructor(new Instructor() { Id = "t1", Name = "munawwar fazal", UserName = "MunawwarFazal021", PasswordHash = "password" });
 
             //IEnumerable<Instructor> instrucutors = _service.GetInstructors();
-            List<SubmissionFile> user = _service.Test();
             
-            return Ok(user);
+            
+            return Ok("OK");
 
         }
 
