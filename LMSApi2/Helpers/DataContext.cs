@@ -34,7 +34,7 @@ namespace LMSApi2.Helpers
             // in memory database used for simplicity, change to a real db for production applications
             string serverAlias = "Default";
             if (!environment.IsDevelopment()) {
-                serverAlias = availableServers[0];
+                serverAlias = availableServers[1];
             }
             options.UseSqlServer(Configuration.GetConnectionString(serverAlias));
 
