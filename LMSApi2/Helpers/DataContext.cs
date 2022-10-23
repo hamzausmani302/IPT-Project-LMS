@@ -30,10 +30,11 @@ namespace LMSApi2.Helpers
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            List<string> availableServers = new (){"RemoteServer" , "AzureServerDB" };
             // in memory database used for simplicity, change to a real db for production applications
             string serverAlias = "Default";
             if (!environment.IsDevelopment()) {
-                serverAlias = "AzureServerDB";
+                serverAlias = availableServers[0];
             }
             options.UseSqlServer(Configuration.GetConnectionString(serverAlias));
 
