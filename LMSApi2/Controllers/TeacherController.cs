@@ -68,8 +68,8 @@ namespace LMSApi2.Controllers
         }
         [HttpGet("Test")]
         public IActionResult Test() {
-            _service.Test();
-            return Ok();
+            List<ClassDTO> clss = _service.Test();
+            return Ok(clss);
         }
 
     }

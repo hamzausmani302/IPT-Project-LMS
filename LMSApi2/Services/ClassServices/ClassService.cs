@@ -13,6 +13,29 @@ namespace LMSApi2.Services.ClassServices
             _context = context;
 
         }
+        public List<ClassDTO> getClassesOfUser(User user)
+        {
+            List<Classes> cu = _context.Users.Where(el => el.UserId == user.UserId)
+                 .Include("Classes")
+                 .Include("Classes.Instructor")
+                 .Include("Classes.Course")
+                 .First()
+                 .Classes;
+
+
+            List<ClassDTO> classDTOs = new List<ClassDTO>();
+            foreach (Classes cls in cu)
+            {
+                classDTOs.Add(new ClassDTO(cls));
+            }
+
+
+            return classDTOs;
+
+
+        }
+
+
         public List<ClassDTO> getClassesOfInstructor(Instructor instructor)
         {
             List<Classes> _classList = _context._Classes.Where(el => (instructor.Id == el.InstructorId)).Include("Course").Include("Instructor").ToList();

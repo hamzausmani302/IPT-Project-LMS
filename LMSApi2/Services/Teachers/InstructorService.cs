@@ -1,5 +1,6 @@
 ﻿using LMSApi2.Authorization;
 using LMSApi2.DTOS;
+using LMSApi2.DTOS.ClassesDTO;
 using LMSApi2.DTOS.Instructors;
 using LMSApi2.Helpers;
 using LMSApi2.Models;
@@ -43,15 +44,25 @@ namespace LMSApi2.Services.Teachers
 
 
         
-        public List<SubmissionFile> Test()
+        public List<ClassDTO> Test()
         {
-            List<ClassesUser> cu = _dataContext.ClassesUsers.Where(el => 1==1).ToList() ;
+           
+            List<Classes> cu = _dataContext.Users.Where(el => el.UserId == "k190146")
+                .Include("Classes")
+                .Include("Classes.Instructor")
+                .Include("Classes.Course")
+                .First()
+                .Classes;
+
             
+            List<ClassDTO> classDTOs = new List<ClassDTO>();
+            foreach (Classes cls in cu)
+            {
+                classDTOs.Add(new ClassDTO(cls));
+            }
 
-           /* _dataContext.Instructor.Add(new Instructor() { Id = "t002", FacultyType = FacultyType.Visiting, Name = "hamza", PasswordHash = "password", UserName = "username" });
-
-            _dataContext.SaveChanges();*/
-            return new List<SubmissionFile>();
+      
+            return classDTOs;
             
 
         }
@@ -62,36 +73,6 @@ namespace LMSApi2.Services.Teachers
 
 
         }
-        /*  public IEnumerable<Instructor> GetInstructors()
-          {
-              return _dataContext.Instructors;
-          }
-  */
-        /* 
-
-         public List<UserClassModel> GetAllClasses(string userId) {
-
-             DbSet<User> users = _dataContext.Users;
-             DbSet<StudentClasses> studentClasses = _dataContext.studentsClasses;
-             List<UserClassModel> dat = new List<UserClassModel>();
-
-
-             var m = _dataContext.studentsClasses.Join(
-                 _dataContext.Users,
-
-                 sc => sc.StudentId,
-                 u => u.UserId,
-                 (sc,user) =>new {user=user,sc=sc.Classes}
-
-
-
-
-                 ).ToList();
-             Console.WriteLine(m.Count);
-             foreach (var _m in m) {
-                 dat.Add(new UserClassModel() { user=_m.user , myClass=_m.sc });
-             }
-             return dat;
-         }*/
+       
     }
 }

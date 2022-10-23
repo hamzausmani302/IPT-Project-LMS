@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMSApi2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221021163758_Initial")]
+    [Migration("20221023161744_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
