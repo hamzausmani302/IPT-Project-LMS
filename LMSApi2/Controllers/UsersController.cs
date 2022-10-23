@@ -6,6 +6,7 @@ using LMSApi2.Services.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMSApi2.Services.ClassServices;
+using LMSApi2.DTOS.ClassesDTO;
 
 namespace LMSApi2.Controllers
 {
@@ -61,7 +62,30 @@ namespace LMSApi2.Controllers
             return Ok(user);
         }
 
+
+        [Authorize]
+        [HttpGet("classes")]
+        public IActionResult GetById()
+        {
+            var currentUser = (User)HttpContext.Items["User"];
+
+            List<ClassDTO> clss = _classService.getClassesOfUser(currentUser);
+            return Ok(clss);
+        }
         //[Authorize]
-        
+
+
+        [HttpGet("Test")]
+        public IActionResult Test() 
+        {
+            _userService.Test();
+            return Ok();
+        }
+
+        [HttpPut("add/class")]
+        public IActionResult addToClass() {
+
+            return Ok();
+        }
     }
 }

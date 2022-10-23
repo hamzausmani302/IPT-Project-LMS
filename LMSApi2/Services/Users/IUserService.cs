@@ -9,5 +9,9 @@ namespace LMSApi2.Services.Users
         AuthenticateResponse Authenticate(AuthenticateRequest model);
         IEnumerable<User> GetAll();
         User GetById(string id);
+
+        public void Test();
+
+        
     }
 }

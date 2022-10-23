@@ -48,5 +48,14 @@ namespace LMSApi2.Services.Users
             if (user == null) throw new KeyNotFoundException("User not found");
             return user;
         }
+
+        public void Test() {
+            var users = _context.Users.Where(el => (el.UserId == "k190220")).Include("Classes").First();
+            var _class = _context._Classes.Find(2);
+            users.Classes.Add(_class);
+            _context.SaveChanges();
+            
+           
+        }
     }
 }

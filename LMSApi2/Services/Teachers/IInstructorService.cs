@@ -1,4 +1,5 @@
 ﻿using LMSApi2.DTOS;
+using LMSApi2.DTOS.ClassesDTO;
 using LMSApi2.DTOS.Instructors;
 using LMSApi2.Models;
 
@@ -11,7 +12,7 @@ namespace LMSApi2.Services.Teachers
                 public Instructor addInstructor(Instructor instructor);
 
                 public List<UserClassModel> GetAllClasses(string userId);*/
-        public List<SubmissionFile> Test();
+        public List<ClassDTO> Test();
 
         public AuthenticateResponseInstructor AuthenticateLogin(AuthenticateRequestInstructor request);
 

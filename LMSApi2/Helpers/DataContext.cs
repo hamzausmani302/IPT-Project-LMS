@@ -15,8 +15,8 @@ namespace LMSApi2.Helpers
 
         public DbSet<Classes> _Classes { get; set; }
         public DbSet<SubmissionFile> SubmissionFile { get; set; }
-        //public DbSet<StudentClasses> studentsClasses {get;set;}
-        public DbSet<ClassesUser> ClassesUsers { get; set; }
+
+        public DbSet<Dictionary<string, object>> classesUsers => Set<Dictionary<string, object>>("ClassesUser");
 
         private readonly IConfiguration Configuration;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment environment;
@@ -33,9 +33,8 @@ namespace LMSApi2.Helpers
             // in memory database used for simplicity, change to a real db for production applications
             string serverAlias = "Default";
             if (!environment.IsDevelopment()) {
-                serverAlias = "RemoteServer";
+                serverAlias = "AzureServerDB";
             }
-            
             options.UseSqlServer(Configuration.GetConnectionString(serverAlias));
 
 
@@ -45,8 +44,7 @@ namespace LMSApi2.Helpers
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<ClassesUser>().HasNoKey();
-            //modelBuilder.Entity<StudentClasses>().HasKey(sc => new { sc.StudentId, sc.ClassID });
+           //modelBuilder.Entity<StudentClasses>().HasKey(sc => new { sc.StudentId, sc.ClassID });
             modelBuilder.Entity<User>().HasData(
                new User
                {
@@ -98,7 +96,30 @@ namespace LMSApi2.Helpers
                 }
                 );
 
-       
+            modelBuilder.Entity<Course>().HasData(
+                new Course()
+                {
+                    CourseID="MT002",
+                    CourseDescription= "course designed to teach studnets how to model real world scenarios using mathematics",
+                    CourseName="Multivariant Calculus",
+                    CreditHours=3,
+                    courseType=CourseType.Thoery,
+                    
+                }
+                );
+            modelBuilder.Entity<Course>().HasData(
+                new Course()
+                {
+                    CourseID = "CS2022",
+                    CourseDescription = "course designed to teach studnets how to model real world scenarios using mathematics",
+                    CourseName = "Programming Fundamentals",
+                    CreditHours = 3,
+                    courseType = CourseType.Thoery,
+                    
+                }
+                );
+           
+
             base.OnModelCreating(modelBuilder);
         }
     }
