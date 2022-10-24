@@ -24,7 +24,7 @@ namespace LMSApi2.Authorization.AuthorizationUser
 
             User user = (User)context.HttpContext.Items["User"];
             
-            Console.WriteLine(user.FirstName);
+            Console.WriteLine(user?.FirstName);
             
             if (user == null )
             {

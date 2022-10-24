@@ -7,6 +7,7 @@ using LMSApi2.Authorization.AuthorizationTeacher;
 using LMSApi2.DTOS.Instructors;
 using LMSApi2.Services.ClassServices;
 using LMSApi2.DTOS.ClassesDTO;
+using LMSApi2.DTOS.Users;
 
 namespace LMSApi2.Controllers
 {
@@ -66,6 +67,30 @@ namespace LMSApi2.Controllers
 
             return Ok(classes);
         }
+
+        [Authorize]
+        [HttpGet("class/students/{id}")]
+        public IActionResult ViewStudents(string id) {
+            int cid;
+            Int32.TryParse(id, out cid);
+            List<User> students = _classService.getUsersEnrolledInClass(cid );
+            List<UserDTO> userDTOs = new List<UserDTO>();
+            foreach (User user in students) {
+                userDTOs.Add(new UserDTO().toDTO(user));
+            }
+           
+
+
+            return Ok(userDTOs);
+        }
+
+        [HttpPost("class/add")]
+        public IActionResult createClass(AddClassDTO addClassDTO) {
+
+            _classService.addANewClass(addClassDTO);
+            return Ok("done");
+        }
+
         [HttpGet("Test")]
         public IActionResult Test() {
             List<ClassDTO> clss = _service.Test();
