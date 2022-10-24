@@ -22,8 +22,11 @@ namespace LMSApi2.Authorization.AuthorizationUser
             if (allowAnonymous)
                 return;
 
-            var user = (User)context.HttpContext.Items["User"];
-            if (user == null || (_roles.Any() && !_roles.Contains(user.Role)))
+            User user = (User)context.HttpContext.Items["User"];
+            
+            Console.WriteLine(user.FirstName);
+            
+            if (user == null )
             {
 
                 context.Result = new JsonResult(new { message = "Unauthroized" }) { StatusCode = StatusCodes.Status401Unauthorized };
