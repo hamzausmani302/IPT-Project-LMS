@@ -25,7 +25,6 @@ namespace LMSApi2.Helpers
         {
             Configuration = configuration;
             environment = env;
-           
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -36,7 +35,7 @@ namespace LMSApi2.Helpers
             if (!environment.IsDevelopment()) {
                 serverAlias = availableServers[1];
             }
-            options.UseSqlServer(Configuration.GetConnectionString(serverAlias));
+            options.UseSqlServer(Configuration.GetConnectionString(availableServers[1]));
 
 
 

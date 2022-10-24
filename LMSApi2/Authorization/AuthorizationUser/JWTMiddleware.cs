@@ -32,7 +32,7 @@ namespace LMSApi2.Authorization.AuthorizationUser
                 // attach user to context on successful jwt validation
                 //logger1.LogInformation(userId.Value.ToString());
                 User user = userService.GetById(userId);
-
+                
 
                 context.Items["User"] = user;
 
