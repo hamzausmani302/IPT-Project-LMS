@@ -22,6 +22,7 @@ namespace LMSApi2.DTOS.ClassesDTO
             course = new CourseDTO(_class.Course);
             startDate = _class.StartDate;
         }
+        public ClassDTO() { }
 
     }
 }

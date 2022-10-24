@@ -7,5 +7,9 @@ namespace LMSApi2.Services.ClassServices
     {
         public List<ClassDTO> getClassesOfInstructor(Instructor instructor);
         public List<ClassDTO> getClassesOfUser(User user);
+        public List<User> getUsersEnrolledInClass(int classId);
+
+        public ClassDTO addUserToClass(User user);
+        public void addANewClass(AddClassDTO dto);
     }
 }

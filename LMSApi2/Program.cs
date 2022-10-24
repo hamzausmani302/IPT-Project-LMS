@@ -39,13 +39,13 @@ var app = builder.Build();
         .AllowAnyHeader());
 
     // global error handler
-   // app.UseMiddleware<ErrorHandlerMiddleware>();
+   app.UseMiddleware<ErrorHandlerMiddleware>();
 
     // custom jwt auth middleware
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction() || app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
