@@ -63,16 +63,33 @@ namespace LMSApi2.Controllers
         }
 
 
+
         [Authorize]
         [HttpGet("classes")]
         public IActionResult GetById()
         {
             var currentUser = (User)HttpContext.Items["User"];
-
             List<ClassDTO> clss = _classService.getClassesOfUser(currentUser);
             return Ok(clss);
         }
         //[Authorize]
+        [Authorize]
+        [HttpGet("class/students/{id}")]
+        public IActionResult ViewStudents(string id)
+        {
+            int cid;
+            Int32.TryParse(id, out cid);
+            List<User> students = _classService.getUsersEnrolledInClass(cid);
+            List<UserDTO> userDTOs = new List<UserDTO>();
+            foreach (User user in students)
+            {
+                userDTOs.Add(new UserDTO().toDTO(user));
+            }
+
+
+
+            return Ok(userDTOs);
+        }
 
 
         [HttpGet("Test")]
@@ -82,10 +99,18 @@ namespace LMSApi2.Controllers
             return Ok();
         }
 
-        [HttpPut("add/class")]
-        public IActionResult addToClass() {
+        [Authorize]
+        [HttpPut("add/class/{code}")]
+        public IActionResult addToClass(string code) 
+        {
+            User user = HttpContext.Items["User"] as User;
+            ClassDTO _class = _classService.addUserToClass(user);
 
-            return Ok();
+
+
+            return Ok(_class);
         }
+
+        
     }
 }
