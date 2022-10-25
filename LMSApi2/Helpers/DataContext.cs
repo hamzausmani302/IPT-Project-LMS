@@ -16,6 +16,8 @@ namespace LMSApi2.Helpers
         public DbSet<Classes> _Classes { get; set; }
         public DbSet<SubmissionFile> SubmissionFile { get; set; }
 
+        public DbSet<Announcement> Announcements { get; set; }
+
         public DbSet<Dictionary<string, object>> classesUsers => Set<Dictionary<string, object>>("ClassesUser");
 
         private readonly IConfiguration Configuration;
