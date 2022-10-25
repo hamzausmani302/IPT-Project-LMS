@@ -16,7 +16,7 @@ namespace LMSApi2.Models
         [Key]
         public int AnnouncementId { get; set; }
         [Required]
-        public int ClassId { get; set; }
+        public int ClassesId { get; set; }
         public virtual Classes Classes { get; set; }        //Navigation attributes
 
         [AllowNull]
@@ -30,9 +30,9 @@ namespace LMSApi2.Models
 
         public DateTime DueDate { get; set; }
 
-        public virtual List<AnnouncementFile>? AnnouncementFiles { get; set; }
+        public virtual List<AnnouncementFile>? AnnouncementFiles { get; set; } //Navigation attributes
 
-        public virtual List<SubmissionFile>? SubmissionFiles { get; set; }
+        public virtual List<SubmissionFile>? SubmissionFiles { get; set; } 
 
 
 

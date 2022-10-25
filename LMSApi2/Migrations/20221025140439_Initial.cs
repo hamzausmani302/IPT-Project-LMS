@@ -89,8 +89,7 @@ namespace LMSApi2.Migrations
                 {
                     AnnouncementId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ClassId = table.Column<int>(type: "int", nullable: false),
-                    ClassesClassId = table.Column<int>(type: "int", nullable: false),
+                    ClassesId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -101,8 +100,8 @@ namespace LMSApi2.Migrations
                 {
                     table.PrimaryKey("PK_Announcements", x => x.AnnouncementId);
                     table.ForeignKey(
-                        name: "FK_Announcements_Classes_ClassesClassId",
-                        column: x => x.ClassesClassId,
+                        name: "FK_Announcements_Classes_ClassesId",
+                        column: x => x.ClassesId,
                         principalTable: "Classes",
                         principalColumn: "ClassId",
                         onDelete: ReferentialAction.Cascade);
@@ -184,6 +183,15 @@ namespace LMSApi2.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Courses",
+                columns: new[] { "CourseID", "CourseDescription", "CourseName", "CreditHours", "courseType" },
+                values: new object[,]
+                {
+                    { "CS2022", "course designed to teach studnets how to model real world scenarios using mathematics", "Programming Fundamentals", 3, 0 },
+                    { "MT002", "course designed to teach studnets how to model real world scenarios using mathematics", "Multivariant Calculus", 3, 0 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Instructor",
                 columns: new[] { "Id", "FacultyType", "Name", "PasswordHash", "UserName" },
                 values: new object[] { "t003", 0, "murtaza fazal", "password", "murtazafazal" });
@@ -204,9 +212,9 @@ namespace LMSApi2.Migrations
                 column: "AnnouncementId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Announcements_ClassesClassId",
+                name: "IX_Announcements_ClassesId",
                 table: "Announcements",
-                column: "ClassesClassId");
+                column: "ClassesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Classes_CourseID",

@@ -1,4 +1,5 @@
-﻿using LMSApi2.DTOS.ClassesDTO;
+﻿using LMSApi2.DTOS.Announcements;
+using LMSApi2.DTOS.ClassesDTO;
 using LMSApi2.Helpers;
 using LMSApi2.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -120,6 +121,15 @@ namespace LMSApi2.Services.ClassServices
           
 
             
+        }
+        public List<AnnouncementResponse> viewAnnoucements(int id) { 
+            
+            List<Announcement> annoucements = _context.Announcements.Where(el=>el.ClassesId == id).ToList();
+            List<AnnouncementResponse> announcementDTOs = new List<AnnouncementResponse>();
+            foreach (var annoucement in annoucements) {
+                announcementDTOs.Add(new AnnouncementResponse(annoucement));
+            }
+            return announcementDTOs;
         }
     }
 }

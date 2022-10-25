@@ -45,10 +45,7 @@ namespace LMSApi2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnnouncementId"), 1L, 1);
 
-                    b.Property<int>("ClassId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ClassesClassId")
+                    b.Property<int>("ClassesId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -69,7 +66,7 @@ namespace LMSApi2.Migrations
 
                     b.HasKey("AnnouncementId");
 
-                    b.HasIndex("ClassesClassId");
+                    b.HasIndex("ClassesId");
 
                     b.ToTable("Announcements");
                 });
@@ -156,6 +153,24 @@ namespace LMSApi2.Migrations
                     b.HasKey("CourseID");
 
                     b.ToTable("Courses");
+
+                    b.HasData(
+                        new
+                        {
+                            CourseID = "MT002",
+                            CourseDescription = "course designed to teach studnets how to model real world scenarios using mathematics",
+                            CourseName = "Multivariant Calculus",
+                            CreditHours = 3,
+                            courseType = 0
+                        },
+                        new
+                        {
+                            CourseID = "CS2022",
+                            CourseDescription = "course designed to teach studnets how to model real world scenarios using mathematics",
+                            CourseName = "Programming Fundamentals",
+                            CreditHours = 3,
+                            courseType = 0
+                        });
                 });
 
             modelBuilder.Entity("LMSApi2.Models.Instructor", b =>
@@ -307,7 +322,7 @@ namespace LMSApi2.Migrations
                 {
                     b.HasOne("LMSApi2.Models.Classes", "Classes")
                         .WithMany("Announcements")
-                        .HasForeignKey("ClassesClassId")
+                        .HasForeignKey("ClassesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
