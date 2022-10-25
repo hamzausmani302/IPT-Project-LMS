@@ -8,6 +8,8 @@ using LMSApi2.DTOS.Instructors;
 using LMSApi2.Services.ClassServices;
 using LMSApi2.DTOS.ClassesDTO;
 using LMSApi2.DTOS.Users;
+using LMSApi2.DTOS.Announcements;
+using LMSApi2.Helpers;
 
 namespace LMSApi2.Controllers
 {
@@ -91,11 +93,24 @@ namespace LMSApi2.Controllers
             return Ok("done");
         }
 
+        [HttpPost("announcement/add/{id}")]
+        public IActionResult addAnnouncement(string id , [FromBody] AnnouncementCreateDTO annoucementDTO) {
+
+            int.TryParse(id, out int cid);
+            if (cid == 0) {
+                throw new APIError("no such class exists");
+            }
+            AnnouncementResponse announcement =  _service.addAnnouncementInClass(cid , annoucementDTO);
+
+            return Ok(announcement);
+        }
+
         [HttpGet("Test")]
         public IActionResult Test() {
             List<ClassDTO> clss = _service.Test();
             return Ok(clss);
         }
+
 
     }
 }
