@@ -145,9 +145,10 @@ namespace LMSApi2.Controllers
             if (announcement == null) {
                 throw new APIError("Error creating announcement");
             }
+            Console.WriteLine("created announcemnt" + announcement.AnnouncementId.ToString());
             int fileUploaded = 0;
             foreach (IFormFile file in fileToUpload) {
-                bool result =await _uploadService.uploadFile(id , file);
+                bool result =await _uploadService.uploadFile(announcement.AnnouncementId , file);
                 if (result == true) {
                     fileUploaded++;
                     
