@@ -2,6 +2,6 @@
 {
     public interface IFileUploadService
     {
-        public  Task<bool> uploadFile(string classId , IFormFile file);
+        public  Task<bool> uploadFile(int announcementId , IFormFile file);
     }
 }

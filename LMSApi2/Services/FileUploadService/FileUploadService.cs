@@ -20,7 +20,7 @@ namespace LMSApi2.Services.FileUploadService
         
         }
 
-        public async Task<bool> uploadFile(string classId , IFormFile file) {
+        public async Task<bool> uploadFile(int announcementId , IFormFile file) {
 
             try
             {
@@ -42,11 +42,12 @@ namespace LMSApi2.Services.FileUploadService
                 }
 
                 //save to database
-                Announcement announcement =  await dataContext.Announcements.Where(el => (el.AnnouncementId == 3)).Include("AnnouncementFiles").FirstOrDefaultAsync();
+                Announcement announcement =  await dataContext.Announcements.Where(el => (el.AnnouncementId == announcementId)).Include("AnnouncementFiles").FirstOrDefaultAsync();
                 if (announcement == null) {
                     Console.WriteLine("null");
 
                 }
+                Console.Write(announcement.AnnouncementFiles.Count);
                 announcement.AnnouncementFiles.Add(new AnnouncementFile() { 
                    FileName = file.FileName,
                    MimeType=  file.ContentType,
