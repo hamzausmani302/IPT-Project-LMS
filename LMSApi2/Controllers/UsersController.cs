@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMSApi2.Services.ClassServices;
 using LMSApi2.DTOS.ClassesDTO;
+using LMSApi2.Helpers;
+using LMSApi2.DTOS.Announcements;
 
 namespace LMSApi2.Controllers
 {
@@ -63,16 +65,33 @@ namespace LMSApi2.Controllers
         }
 
 
+
         [Authorize]
         [HttpGet("classes")]
         public IActionResult GetById()
         {
             var currentUser = (User)HttpContext.Items["User"];
-
             List<ClassDTO> clss = _classService.getClassesOfUser(currentUser);
             return Ok(clss);
         }
         //[Authorize]
+        [Authorize]
+        [HttpGet("class/students/{id}")]
+        public IActionResult ViewStudents(string id)
+        {
+            int cid;
+            Int32.TryParse(id, out cid);
+            List<User> students = _classService.getUsersEnrolledInClass(cid);
+            List<UserDTO> userDTOs = new List<UserDTO>();
+            foreach (User user in students)
+            {
+                userDTOs.Add(new UserDTO().toDTO(user));
+            }
+
+
+
+            return Ok(userDTOs);
+        }
 
 
         [HttpGet("Test")]
@@ -82,10 +101,32 @@ namespace LMSApi2.Controllers
             return Ok();
         }
 
-        [HttpPut("add/class")]
-        public IActionResult addToClass() {
+        [Authorize]
+        [HttpPut("add/class/{code}")]
+        public IActionResult addToClass(string code) 
+        {
+            User user = HttpContext.Items["User"] as User;
+            ClassDTO _class = _classService.addUserToClass(user);
 
-            return Ok();
+
+
+            return Ok(_class);
         }
+
+
+        [HttpGet("annoucements/class/{id}")]
+        public IActionResult getAllAnnoucementsOfAClass(string id) {
+
+            int.TryParse(id , out int cid);
+            if (cid == 0 || cid == null)
+            {
+                throw new APIError("no such class exists");
+            }
+            List<AnnouncementResponse> announcements = _classService.viewAnnoucements(cid);
+
+            return Ok(announcements);
+        }
+
+        
     }
 }

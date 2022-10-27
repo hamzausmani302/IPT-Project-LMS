@@ -36,6 +36,9 @@ namespace LMSApi2.Helpers
                     case NotFoundException e:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
+                    case APIError e:
+                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        break;
                     default:
                         // unhandled error
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;

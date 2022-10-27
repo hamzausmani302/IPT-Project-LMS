@@ -1,5 +1,6 @@
 ﻿using LMSApi2.Authorization;
 using LMSApi2.DTOS;
+using LMSApi2.DTOS.Announcements;
 using LMSApi2.DTOS.ClassesDTO;
 using LMSApi2.DTOS.Instructors;
 using LMSApi2.Helpers;
@@ -73,6 +74,31 @@ namespace LMSApi2.Services.Teachers
 
 
         }
-       
+        public AnnouncementResponse addAnnouncementInClass(int classId , AnnouncementCreateDTO dto) {
+            
+                Classes _class = _dataContext._Classes.Where(cl => (cl.ClassId == classId)).Include("Announcements").First();
+            Console.WriteLine(_class.CourseID);
+                Announcement announcement = new Announcement()
+                {
+                    Classes = _class,
+                    announcementType = dto.announcementType,
+                    CreatedAt = DateTime.Now,
+                    Description = dto.Description,
+                    DueDate = dto.DueDate,
+                    Title = dto.Title
+                };
+            try { 
+                _dataContext.Announcements.Add(announcement);
+                _dataContext.SaveChanges();
+                return new AnnouncementResponse(announcement);
+            }
+            catch (Exception ex) {
+                throw new APIError("Unable to save data" + ex.StackTrace); 
+            
+            }
+            
+        
+        }
+
     }
 }

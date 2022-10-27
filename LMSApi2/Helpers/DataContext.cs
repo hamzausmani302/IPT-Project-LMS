@@ -16,7 +16,11 @@ namespace LMSApi2.Helpers
         public DbSet<Classes> _Classes { get; set; }
         public DbSet<SubmissionFile> SubmissionFile { get; set; }
 
+        public DbSet<AnnouncementFile> AnnouncementFile { get; set; }
+        public DbSet<Announcement> Announcements { get; set; }
+
         public DbSet<Dictionary<string, object>> classesUsers => Set<Dictionary<string, object>>("ClassesUser");
+
 
         private readonly IConfiguration Configuration;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment environment;
@@ -25,7 +29,6 @@ namespace LMSApi2.Helpers
         {
             Configuration = configuration;
             environment = env;
-           
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -104,8 +107,7 @@ namespace LMSApi2.Helpers
                     CourseDescription= "course designed to teach studnets how to model real world scenarios using mathematics",
                     CourseName="Multivariant Calculus",
                     CreditHours=3,
-                    courseType=CourseType.Thoery,
-                    
+                    courseType=CourseType.Thoery,   
                 }
                 );
             modelBuilder.Entity<Course>().HasData(
@@ -119,6 +121,7 @@ namespace LMSApi2.Helpers
                     
                 }
                 );
+
            
 
             base.OnModelCreating(modelBuilder);

@@ -4,5 +4,7 @@
     {
         public string? Secret { get; set; }
         public string? TeacherSecret { get; set; }
+
+        public string? SaveFolderPath { get; set; }
     }
 }
