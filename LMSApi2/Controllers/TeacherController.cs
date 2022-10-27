@@ -1,5 +1,5 @@
 ﻿using LMSApi2.Services.Teachers;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using LMSApi2.Models;
 
@@ -10,6 +10,8 @@ using LMSApi2.DTOS.ClassesDTO;
 using LMSApi2.DTOS.Users;
 using LMSApi2.DTOS.Announcements;
 using LMSApi2.Helpers;
+using LMSApi2.Services.FileUploadService;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LMSApi2.Controllers
 {
@@ -21,11 +23,12 @@ namespace LMSApi2.Controllers
         private readonly IInstructorService _service;
         private readonly ILogger<Instructor> logger;
         private readonly IClassService _classService;
-
-        public TeacherController(IInstructorService instructorService , IClassService classService , ILogger<Instructor> logger) {
+        private readonly IFileUploadService _uploadService;
+        public TeacherController(IFileUploadService fileUploadService ,IInstructorService instructorService , IClassService classService , ILogger<Instructor> logger) {
             _service = instructorService;
             this.logger = logger;
             _classService = classService;
+            _uploadService = fileUploadService;
         }
         
 
@@ -39,18 +42,6 @@ namespace LMSApi2.Controllers
             AuthenticateResponseInstructor instructorResponse = _service.AuthenticateLogin(request);
             Console.WriteLine("testing login");
             return Ok(instructorResponse);
-        }
-
-        [Authorize]
-        [HttpGet("[action]")]
-        public IActionResult Get() {
-            //_service.addInstructor(new Instructor() { Id = "t1", Name = "munawwar fazal", UserName = "MunawwarFazal021", PasswordHash = "password" });
-
-            //IEnumerable<Instructor> instrucutors = _service.GetInstructors();
-            
-            
-            return Ok("OK");
-
         }
 
         [Authorize]
@@ -86,6 +77,7 @@ namespace LMSApi2.Controllers
             return Ok(userDTOs);
         }
 
+        [Authorize]
         [HttpPost("class/add")]
         public IActionResult createClass(AddClassDTO addClassDTO) {
 
@@ -93,6 +85,8 @@ namespace LMSApi2.Controllers
             return Ok("done");
         }
 
+        
+        /*[Authorize]*/
         [HttpPost("announcement/add/{id}")]
         public IActionResult addAnnouncement(string id , [FromBody] AnnouncementCreateDTO annoucementDTO) {
 
@@ -109,6 +103,62 @@ namespace LMSApi2.Controllers
         public IActionResult Test() {
             List<ClassDTO> clss = _service.Test();
             return Ok(clss);
+        }
+
+
+        [HttpPost("upload/class/{id}")]
+        public async Task<IActionResult> uploadFile(string id , [FromForm]List<IFormFile> fileToUpload) {
+            Console.WriteLine(HttpContext.Request.Form.Files.Count);
+            Console.WriteLine(fileToUpload.Count);
+            IFormCollection collection =  HttpContext.Request.Form;
+
+            AnnouncementType announcementType = collection["announcementType"] == "ASSIGNMENT" ?  AnnouncementType.ASSIGNMENT : (collection["announcementType"] == "ANNOUNCEMENT" ? AnnouncementType.ANNOUNCEMENT : throw new APIError("Announcement type is incorrect") ) ;
+            if (collection["title"].IsNullOrEmpty()) {
+                throw new APIError("title is not provided");
+            }
+            if (collection["dueDate"].IsNullOrEmpty()) {
+                throw new APIError("dueDate is not provided");
+
+            }
+
+            DateTime dueDate=  DateTime.Parse(collection["dueDate"] );
+            if (dueDate == null) {
+                throw new APIError("Invlaid datetime format");
+            }
+            AnnouncementCreateDTO annoucementDTO = new AnnouncementCreateDTO() { 
+                announcementType = announcementType,
+                Description= collection["description"],
+                DueDate=dueDate,
+                Title = collection["title"]
+
+
+
+
+            };
+            int.TryParse(id, out int cid);
+            if (cid == 0)
+            {
+                throw new APIError("no such class exists");
+            }
+            Console.WriteLine("saving anbnouncemnt");
+            AnnouncementResponse announcement = _service.addAnnouncementInClass(cid, annoucementDTO);
+            if (announcement == null) {
+                throw new APIError("Error creating announcement");
+            }
+            int fileUploaded = 0;
+            foreach (IFormFile file in fileToUpload) {
+                bool result =await _uploadService.uploadFile(id , file);
+                if (result == true) {
+                    fileUploaded++;
+                    
+                }
+            }
+
+
+
+
+            //          Console.WriteLine(val);
+            return Ok(new {Accouncement = announcement , Count= fileUploaded }); 
         }
 
 

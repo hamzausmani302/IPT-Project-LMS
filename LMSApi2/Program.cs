@@ -9,6 +9,7 @@ using LMSApi2.Services.Teachers;
 using LMSApi2.Services.Users;
 using System.Text.Json.Serialization;
 using LMSApi2.Services.ClassServices;
+using LMSApi2.Services.FileUploadService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +25,13 @@ builder.Services.AddControllers().AddJsonOptions(opt => {
 
 
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInstructorService , InstructorService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+
 builder.Services.AddScoped<IClassService, ClassService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

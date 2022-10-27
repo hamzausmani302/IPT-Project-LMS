@@ -77,6 +77,7 @@ namespace LMSApi2.Services.Teachers
         public AnnouncementResponse addAnnouncementInClass(int classId , AnnouncementCreateDTO dto) {
             
                 Classes _class = _dataContext._Classes.Where(cl => (cl.ClassId == classId)).Include("Announcements").First();
+            Console.WriteLine(_class.CourseID);
                 Announcement announcement = new Announcement()
                 {
                     Classes = _class,
@@ -92,7 +93,7 @@ namespace LMSApi2.Services.Teachers
                 return new AnnouncementResponse(announcement);
             }
             catch (Exception ex) {
-                throw new APIError("Unable to save data"); 
+                throw new APIError("Unable to save data" + ex.StackTrace); 
             
             }
             
