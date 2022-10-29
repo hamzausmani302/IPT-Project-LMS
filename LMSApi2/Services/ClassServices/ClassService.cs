@@ -124,7 +124,7 @@ namespace LMSApi2.Services.ClassServices
         }
         public List<AnnouncementResponse> viewAnnoucements(int id) { 
             
-            List<Announcement> annoucements = _context.Announcements.Where(el=>el.ClassesId == id).ToList();
+            List<Announcement> annoucements = _context.Announcements.Where(el=>el.ClassesId == id).Include("AnnouncementFiles").ToList();
             List<AnnouncementResponse> announcementDTOs = new List<AnnouncementResponse>();
             foreach (var annoucement in annoucements) {
                 announcementDTOs.Add(new AnnouncementResponse(annoucement));

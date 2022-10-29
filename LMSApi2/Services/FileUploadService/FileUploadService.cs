@@ -26,8 +26,8 @@ namespace LMSApi2.Services.FileUploadService
             {
                 Console.WriteLine(Path.GetFullPath(options.Value.SaveFolderPath));
                 string rootPath = Directory.GetCurrentDirectory();
-                string savePath = rootPath + @"\" + options.Value.SaveFolderPath;
-                string finalFilePath = savePath + @"\" + file.FileName;
+                string savePath = rootPath + @"/" + options.Value.SaveFolderPath;
+                string finalFilePath = savePath + @"/" + file.FileName;
                 Console.WriteLine(Directory.GetCurrentDirectory());
                 if (!Directory.Exists(Path.GetFullPath(options.Value.SaveFolderPath)))
                 {
@@ -67,22 +67,10 @@ namespace LMSApi2.Services.FileUploadService
 
         }
 
-        /* public async Task<bool> UploadService( SubmissionFile obj, IWebHostEnvironment Environment)
-         {
-             *//*if (!Directory.Exists(Environment.WebRootPath + "\\Files\\"))
-             {
-                 Directory.CreateDirectory(Environment.WebRootPath + "\\Files\\");
-
-             }
-             using (FileStream fs = System.IO.File.Create(Environment.WebRootPath + "\\Files\\" + obj.files.FileName))
-             {
-                 obj.files.CopyTo(fs);
-                 fs.Flush();
-                 return true;
-             }
-             return false;*//*
-             await return false;
-         }*/
+        public Task<AnnouncementFile> getFile(string filename) {
+            var file = dataContext.AnnouncementFile.Where(el => el.FileName == filename).FirstAsync();
+            return file;
+        }
 
     }
 }
