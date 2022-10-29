@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using LMSApi2.Authorization.AuthorizationAnonymous;
 using Microsoft.AspNetCore.Mvc;
+using LMSApi2.Helpers;
 
 namespace LMSApi2.Authorization.AuthorizationTeacher
 {
@@ -24,7 +25,7 @@ namespace LMSApi2.Authorization.AuthorizationTeacher
 
             var instructor = context.HttpContext.Items["Instructor"] as Instructor;
             if (instructor == null) {
-                context.Result = new JsonResult(new { message = "Unauthroized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                context.Result = new JsonResult(new { message = ErrorMessages.dict[ERROR_TYPES.AUTH_ERROR] }) { StatusCode = StatusCodes.Status401Unauthorized };
             }
 
        
