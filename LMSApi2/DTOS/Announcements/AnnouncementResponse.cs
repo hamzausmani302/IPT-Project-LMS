@@ -22,6 +22,8 @@ namespace LMSApi2.DTOS.Announcements
 
         public DateTime DueDate { get; set; }
 
+        public List<AnnouncementFile> announcementFiles { get; set; }
+
         public AnnouncementResponse(Announcement announcement) {
             AnnouncementId = announcement.AnnouncementId;
             ClassesId = announcement.ClassesId;
@@ -29,6 +31,9 @@ namespace LMSApi2.DTOS.Announcements
             Title = announcement.Title;
             CreatedAt = announcement.CreatedAt;
             DueDate = announcement.DueDate;
+            announcementFiles = announcement?.AnnouncementFiles == null ? new List<AnnouncementFile>() : announcement?.AnnouncementFiles;
+            
+            
         }
         public AnnouncementResponse() { }
 

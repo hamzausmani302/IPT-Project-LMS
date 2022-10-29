@@ -9,6 +9,8 @@ using LMSApi2.Services.ClassServices;
 using LMSApi2.DTOS.ClassesDTO;
 using LMSApi2.Helpers;
 using LMSApi2.DTOS.Announcements;
+using Microsoft.Extensions.Options;
+using LMSApi2.Services.FileUploadService;
 
 namespace LMSApi2.Controllers
 {
@@ -20,10 +22,14 @@ namespace LMSApi2.Controllers
         private readonly IUserService _userService;
         private readonly IClassService _classService;
         private readonly ILogger<User> logger;
-        public UsersController(IUserService userService, IClassService classService , ILogger<User> logger) {
+        private readonly IOptions<AppSettings> settings;
+        private readonly IFileUploadService _fileService;
+        public UsersController(IUserService userService, IClassService classService, IFileUploadService fileService , ILogger<User> logger , IOptions<AppSettings> settings) {
             _userService = userService;
             this.logger = logger;
             _classService = classService;
+            this.settings = settings;
+            _fileService = fileService;
         }
 
         [AllowAnonymous]
@@ -127,6 +133,21 @@ namespace LMSApi2.Controllers
             return Ok(announcements);
         }
 
+        [HttpGet("Files/{filename}")]
+        public IActionResult getAnnouncementFile(string filename) {
+            if (filename.Contains("/") || filename.Contains(@"\")) {
+                return BadRequest();
+            }
+            string constructedFilePath = Path.GetFullPath(Path.Combine(settings.Value.SaveFolderPath, filename));
+            if (!FileUtils.isFileExist(constructedFilePath)) {
+                return NotFound();
+            }
+            FileStream stream = new FileStream(constructedFilePath, FileMode.Open, FileAccess.Read);
+            
+
+
+            return File(stream , "application/octet-stream");   
+        }
         
     }
 }
