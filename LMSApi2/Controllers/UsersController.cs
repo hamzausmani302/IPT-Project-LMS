@@ -119,7 +119,7 @@ namespace LMSApi2.Controllers
             return Ok(_class);
         }
 
-
+        [Authorize]
         [HttpGet("annoucements/class/{id}")]
         public IActionResult getAllAnnoucementsOfAClass(string id) {
 
@@ -134,6 +134,7 @@ namespace LMSApi2.Controllers
         }
 
         [HttpGet("Files/{filename}")]
+
         public IActionResult getAnnouncementFile(string filename) {
             if (filename.Contains("/") || filename.Contains(@"\")) {
                 return BadRequest();
