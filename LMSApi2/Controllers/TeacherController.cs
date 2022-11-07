@@ -30,7 +30,21 @@ namespace LMSApi2.Controllers
             _classService = classService;
             _uploadService = fileUploadService;
         }
-        
+
+        [Authorize]
+        [HttpGet("annoucements/class/{id}")]
+        public IActionResult getAllAnnoucementsOfAClass(string id)
+        {
+
+            int.TryParse(id, out int cid);
+            if (cid == 0 || cid == null)
+            {
+                throw new APIError("no such class exists");
+            }
+            List<AnnouncementResponse> announcements = _classService.viewAnnoucements(cid);
+
+            return Ok(announcements);
+        }
 
 
         [HttpPost("[action]")]
