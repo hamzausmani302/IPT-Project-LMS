@@ -37,9 +37,9 @@ namespace LMSApi2.Controllers
         {
 
             int.TryParse(id, out int cid);
-            if (cid == 0 || cid == null)
+            if (cid == 0 || cid == null || !_classService.isClassExists(cid))
             {
-                throw new APIError("no such class exists");
+                throw new NotFoundException("no such class exists");
             }
             List<AnnouncementResponse> announcements = _classService.viewAnnoucements(cid);
 

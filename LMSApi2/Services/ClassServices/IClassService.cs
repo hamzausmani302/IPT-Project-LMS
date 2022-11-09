@@ -14,5 +14,8 @@ namespace LMSApi2.Services.ClassServices
         public void addANewClass(AddClassDTO dto);
 
         public List<AnnouncementResponse> viewAnnoucements(int id);
+
+
+        public bool isClassExists(int classId);
     }
 }

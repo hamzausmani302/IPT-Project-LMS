@@ -14,7 +14,7 @@ using LMSApi2.Services.FileUploadService;
 
 namespace LMSApi2.Controllers
 {
-   
+
     [Route("api/user/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -24,7 +24,7 @@ namespace LMSApi2.Controllers
         private readonly ILogger<User> logger;
         private readonly IOptions<AppSettings> settings;
         private readonly IFileUploadService _fileService;
-        public UsersController(IUserService userService, IClassService classService, IFileUploadService fileService , ILogger<User> logger , IOptions<AppSettings> settings) {
+        public UsersController(IUserService userService, IClassService classService, IFileUploadService fileService, ILogger<User> logger, IOptions<AppSettings> settings) {
             _userService = userService;
             this.logger = logger;
             _classService = classService;
@@ -41,22 +41,22 @@ namespace LMSApi2.Controllers
 
         [Authorize(Role.Admin)]
         [HttpGet]
-        public IActionResult GetAll() { 
+        public IActionResult GetAll() {
             var users = _userService.GetAll();
             return Ok(users);
-        
+
         }
 
         [AllowAnonymous]
         [HttpPost("[action]")]
         public IActionResult Login(AuthenticateRequest request) {
             var response = _userService.Authenticate(request);
-            
+
             return Ok(response);
         }
 
 
-       
+
 
         [HttpGet("{id}")]
         public IActionResult GetById(string id)
@@ -101,7 +101,7 @@ namespace LMSApi2.Controllers
 
 
         [HttpGet("Test")]
-        public IActionResult Test() 
+        public IActionResult Test()
         {
             _userService.Test();
             return Ok();
@@ -109,7 +109,7 @@ namespace LMSApi2.Controllers
 
         [Authorize]
         [HttpPut("add/class/{code}")]
-        public IActionResult addToClass(string code) 
+        public IActionResult addToClass(string code)
         {
             User user = HttpContext.Items["User"] as User;
             ClassDTO _class = _classService.addUserToClass(user);
@@ -123,11 +123,15 @@ namespace LMSApi2.Controllers
         [HttpGet("annoucements/class/{id}")]
         public IActionResult getAllAnnoucementsOfAClass(string id) {
 
-            int.TryParse(id , out int cid);
-            if (cid == 0 || cid == null)
+            int.TryParse(id, out int cid);
+            Console.WriteLine(cid);
+            Console.WriteLine(_classService.isClassExists(cid));
+            if (cid == 0 || cid == null || _classService.isClassExists(cid) == false)
             {
-                throw new APIError("no such class exists");
+                throw new NotFoundException("no such class exists");
             }
+            
+
             List<AnnouncementResponse> announcements = _classService.viewAnnoucements(cid);
 
             return Ok(announcements);
