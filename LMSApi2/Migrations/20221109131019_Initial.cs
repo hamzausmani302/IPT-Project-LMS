@@ -63,6 +63,7 @@ namespace LMSApi2.Migrations
                     ClassId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CourseID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ClassCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InstructorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Section = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -163,8 +164,7 @@ namespace LMSApi2.Migrations
                     MimeType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AnnouncementId = table.Column<int>(type: "int", nullable: false),
-                    StudentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -176,8 +176,8 @@ namespace LMSApi2.Migrations
                         principalColumn: "AnnouncementId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SubmissionFile_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_SubmissionFile_Users_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "Users",
                         principalColumn: "UserId");
                 });
@@ -237,9 +237,9 @@ namespace LMSApi2.Migrations
                 column: "AnnouncementId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubmissionFile_UserId",
+                name: "IX_SubmissionFile_StudentId",
                 table: "SubmissionFile",
-                column: "UserId");
+                column: "StudentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

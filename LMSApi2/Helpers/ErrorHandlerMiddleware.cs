@@ -20,6 +20,7 @@ namespace LMSApi2.Helpers
             }
             catch (Exception error)
             {
+                Console.WriteLine(error.GetType().Name);
                 var response = context.Response;
                 response.ContentType = "application/json";
 
@@ -28,6 +29,7 @@ namespace LMSApi2.Helpers
                     case AppException e:
                         // custom application error
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        
                         break;
                     case KeyNotFoundException e:
                         // not found error
