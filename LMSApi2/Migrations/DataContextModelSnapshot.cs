@@ -109,6 +109,9 @@ namespace LMSApi2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassId"), 1L, 1);
 
+                    b.Property<string>("ClassCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CourseID")
                         .HasColumnType("nvarchar(450)");
 
@@ -229,16 +232,13 @@ namespace LMSApi2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AnnouncementId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("SubmissionFile");
                 });
@@ -367,7 +367,7 @@ namespace LMSApi2.Migrations
 
                     b.HasOne("LMSApi2.Models.User", "User")
                         .WithMany("SubmissionFiles")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("StudentId");
 
                     b.Navigation("Announcement");
 

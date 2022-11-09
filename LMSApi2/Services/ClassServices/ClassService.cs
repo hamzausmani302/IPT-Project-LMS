@@ -122,9 +122,24 @@ namespace LMSApi2.Services.ClassServices
 
             
         }
+
+        public bool isClassExists(int classId) { 
+            Classes? _class = _context._Classes.Find(classId);
+            if (_class != null) {
+                return true;
+            }
+            return false;
+
+        }
+
+
         public List<AnnouncementResponse> viewAnnoucements(int id) { 
             
-            List<Announcement> annoucements = _context.Announcements.Where(el=>el.ClassesId == id).Include("AnnouncementFiles").ToList();
+            List<Announcement> annoucements = _context.Announcements.Where(el=>el.ClassesId == id).Include("AnnouncementFiles")
+                .Include("Classes")
+                .Include("Classes.Instructor")
+                .Include("Classes.Course")
+                .ToList();
             List<AnnouncementResponse> announcementDTOs = new List<AnnouncementResponse>();
             foreach (var annoucement in annoucements) {
                 announcementDTOs.Add(new AnnouncementResponse(annoucement));
