@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LSTEMP>
+  <Emp>
+    <Name>Abdullah</Name>
+    <ID>4</ID>
+  </Emp>
+  <Emp>
+    <Name>Akbar</Name>
+    <ID>5</ID>
+  </Emp>
+</LSTEMP>

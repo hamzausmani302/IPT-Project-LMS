@@ -21,5 +21,7 @@ namespace LMSApi2.Services.Teachers
 
         public AnnouncementResponse addAnnouncementInClass(int classId , AnnouncementCreateDTO dto);
 
+        public Task<List<AnnouncementResponse>> getAllAssignmentsOfATeacher(Instructor instructor);
+
     }
 }
