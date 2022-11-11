@@ -100,5 +100,22 @@ namespace LMSApi2.Services.Teachers
         
         }
 
+        public async Task<List<AnnouncementResponse>> getAllAssignmentsOfATeacher(Instructor instructor) {
+            List<Classes> teacherClasses =  await _dataContext._Classes.Where(el => el.InstructorId == instructor.Id).Include("Announcements").ToListAsync();
+            List<AnnouncementResponse> announcements = new List<AnnouncementResponse>();
+            foreach (Classes teacherClass in teacherClasses) {
+                foreach (Announcement announcement in _dataContext.Announcements) {
+                    if (announcement.announcementType == AnnouncementType.ASSIGNMENT) {
+                        announcements.Add(new AnnouncementResponse(announcement));
+                    }
+                    
+                }
+            }
+
+
+            return announcements;
+        
+        }
+
     }
 }

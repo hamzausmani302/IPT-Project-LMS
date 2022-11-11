@@ -76,21 +76,26 @@ namespace LMSApi2.Services.ClassServices
 
 
 
-        public ClassDTO addUserToClass(User user) {
-           
-                Classes _class = _context._Classes.Where(el => (el.ClassId == 2))
-                .Include("Users")
-                .Include("Instructor")
-                .Include("Course")
-                .First();
-                //Console.WriteLine(_class.Users.Count);
+        public async Task<ClassDTO> addUserToClass(string code , User user) {
+
+            
+
+            Classes _class = await _context._Classes.Where(el => (el.ClassCode == code))
+            .Include("Users")
+            .Include("Instructor")
+            .Include("Course")
+            .FirstOrDefaultAsync();
+            //Console.WriteLine(_class.Users.Count);
+            if (_class.Users.Contains(user)) {
+                throw new APIError("Duplicate Entry. Already enrolled");
+            }
 
                 if (_class == null)
                 {
                     throw new NotFoundException("No such class exists");
                 }
                 ClassDTO dto = new ClassDTO(_class);
-                Console.WriteLine(_class.CourseID);
+                
                 _class.Users.Add(user);
                 _context.SaveChanges();
                 return dto; 
@@ -99,18 +104,26 @@ namespace LMSApi2.Services.ClassServices
           
         }
 
-        public void addANewClass(AddClassDTO dto) {
+        public Classes addANewClass(AddClassDTO dto , Instructor instructor) {
             try
             {
-
-                _context._Classes.Add(new Classes()
+                string randomCode = UtilFunctions.generateClassCode();
+                Course course = _context.Courses.Find(dto.courseID);
+                if (course == null) {
+                    throw new NotFoundException("Course not found");
+                }
+                Classes _class = new Classes()
                 {
-                    InstructorId = dto.instructorID,
-                    CourseID = dto.courseID,
+                    Instructor = instructor,
+                    Course = _context.Courses.Find(dto.courseID),
                     StartDate = dto.startDate,
-                    Section = dto.Section
-                });
+                    Section = dto.Section,
+                    ClassCode = randomCode
+
+                };
+                _context._Classes.Add(_class);
                 _context.SaveChanges();
+                return _class;
             }
             catch (DbUpdateException exption) {
                 throw new APIError(exption.Message);

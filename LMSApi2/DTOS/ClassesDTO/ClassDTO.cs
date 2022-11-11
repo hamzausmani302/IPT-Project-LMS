@@ -14,13 +14,22 @@ namespace LMSApi2.DTOS.ClassesDTO
 
         public DateTime startDate { get; set; }
 
+        public string? ClassCode { get; set; }
 
         public ClassDTO(Classes _class){
             Id = _class.ClassId;
-            instructor = new InstrutorDTO(_class.Instructor);
+            if (_class.Instructor != null) {
+                instructor = new InstrutorDTO(_class.Instructor);
+
+            }
             Section = _class.Section;
-            course = new CourseDTO(_class.Course);
+            if (_class.Course != null)
+            {
+                course = new CourseDTO(_class.Course);
+
+            }
             startDate = _class.StartDate;
+            ClassCode = _class.ClassCode;
         }
         public ClassDTO() { }
 
