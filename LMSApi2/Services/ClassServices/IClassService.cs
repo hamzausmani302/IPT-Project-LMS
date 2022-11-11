@@ -10,8 +10,8 @@ namespace LMSApi2.Services.ClassServices
         public List<ClassDTO> getClassesOfUser(User user);
         public List<User> getUsersEnrolledInClass(int classId);
 
-        public ClassDTO addUserToClass(User user);
-        public void addANewClass(AddClassDTO dto);
+        public Task<ClassDTO> addUserToClass(string code , User user);
+        public Classes addANewClass(AddClassDTO dto , Instructor instructor);
 
         public List<AnnouncementResponse> viewAnnoucements(int id);
 

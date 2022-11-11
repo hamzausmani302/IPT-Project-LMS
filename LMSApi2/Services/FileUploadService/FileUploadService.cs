@@ -72,5 +72,48 @@ namespace LMSApi2.Services.FileUploadService
             return file;
         }
 
+
+       
+
+        public async  Task uploadSubmissionFile(int announcementId, IFormFile file , User user) {
+            Announcement currentAnnouncement =await dataContext.Announcements.FindAsync(announcementId);
+            if (currentAnnouncement == null) {
+                throw new NotFoundException("No such announcement exists");
+            }
+
+            string rootPath = Directory.GetCurrentDirectory();
+            string savePath = rootPath + @"/" + options.Value.SaveFolderPath;
+            string finalFilePath = savePath + @"/" + file.FileName;
+
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            if (!Directory.Exists(Path.GetFullPath(options.Value.SaveFolderPath)))
+            {
+
+                Directory.CreateDirectory(savePath);
+            }
+            
+                using (FileStream fs = File.Create(finalFilePath))
+                {
+                    await file.CopyToAsync(fs);
+                    fs.Flush();
+
+                }
+                SubmissionFile fileToSubmit = new SubmissionFile()
+                {
+                    FileName = file.FileName,
+                    FilePath = finalFilePath,
+                    MimeType = file.ContentType,
+                    Announcement = currentAnnouncement,
+                    User = user
+
+                };
+                await dataContext.SubmissionFile.AddAsync(fileToSubmit);
+                await dataContext.SaveChangesAsync();
+                    
+        
+           
+
+        }
+
     }
 }

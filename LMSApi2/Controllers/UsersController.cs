@@ -11,6 +11,7 @@ using LMSApi2.Helpers;
 using LMSApi2.DTOS.Announcements;
 using Microsoft.Extensions.Options;
 using LMSApi2.Services.FileUploadService;
+using System.Net;
 
 namespace LMSApi2.Controllers
 {
@@ -109,14 +110,11 @@ namespace LMSApi2.Controllers
 
         [Authorize]
         [HttpPut("add/class/{code}")]
-        public IActionResult addToClass(string code)
+        public async Task<IActionResult> addToClass(string code)
         {
             User user = HttpContext.Items["User"] as User;
-            ClassDTO _class = _classService.addUserToClass(user);
-
-
-
-            return Ok(_class);
+            ClassDTO _class = await _classService.addUserToClass(code, user);
+            return new ObjectResult(_class) { StatusCode=(int)HttpStatusCode.Created};
         }
 
         [Authorize]
@@ -137,7 +135,7 @@ namespace LMSApi2.Controllers
             return Ok(announcements);
         }
 
-        [HttpGet("Files/{filename}")]
+        [HttpGet("/Files/{filename}")]
 
         public IActionResult getAnnouncementFile(string filename) {
             if (filename.Contains("/") || filename.Contains(@"\")) {
@@ -153,6 +151,32 @@ namespace LMSApi2.Controllers
 
             return File(stream , "application/octet-stream");   
         }
-        
+
+        [Authorize]
+        [HttpPost("upload/assignment/{id}")]
+        public async  Task<IActionResult> uploadAssignment(string id , [FromForm] List<IFormFile> fileToUpload) {
+
+            IFormCollection collection = HttpContext.Request.Form;
+            User user = HttpContext.Items["User"] as User;
+            int.TryParse(id, out int cid);
+            if (cid == 0 || !_classService.isClassExists(cid))          //check if user enrolled in class also
+            {
+                throw new APIError("no such class exists");
+            }
+            int successfulFileUploaded = 0;
+            foreach (IFormFile file in fileToUpload)
+            {
+                try
+                {
+                    await _fileService.uploadSubmissionFile(cid, file, user);
+                    successfulFileUploaded++;
+                }
+                catch (Exception) {
+                    continue;
+                }
+            }
+            return new ObjectResult(new { Success = successfulFileUploaded, Failed = (fileToUpload.Count - successfulFileUploaded) }) { StatusCode=(int)HttpStatusCode.OK};
+
+        }
     }
 }

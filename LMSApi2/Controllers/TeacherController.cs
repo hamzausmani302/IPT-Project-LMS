@@ -94,9 +94,10 @@ namespace LMSApi2.Controllers
         [Authorize]
         [HttpPost("class/add")]
         public IActionResult createClass(AddClassDTO addClassDTO) {
-
-            _classService.addANewClass(addClassDTO);
-            return Ok("done");
+            Instructor instructor = HttpContext.Items["Instructor"] as Instructor;          //middleware ensures that it is not null
+            Classes classCreated = _classService.addANewClass(addClassDTO , instructor);
+            ClassDTO classDTO = new ClassDTO(classCreated);
+            return Ok(classDTO);
         }
 
         
@@ -117,6 +118,14 @@ namespace LMSApi2.Controllers
         public IActionResult Test() {
             List<ClassDTO> clss = _service.Test();
             return Ok(clss);
+        }
+
+        [Authorize]
+        [HttpGet("announcements/all")]
+        public async Task<List<AnnouncementResponse>> GetAllAnnouncementsOfATeacher() {
+            Instructor instructor = HttpContext.Items["Instructor"] as Instructor;
+            return await _service.getAllAssignmentsOfATeacher(instructor);
+            
         }
 
 
