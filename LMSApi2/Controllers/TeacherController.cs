@@ -1,4 +1,5 @@
-﻿using LMSApi2.Services.Teachers;
+﻿
+using LMSApi2.Services.Teachers;
 
 using Microsoft.AspNetCore.Mvc;
 using LMSApi2.Models;
@@ -12,6 +13,9 @@ using LMSApi2.DTOS.Announcements;
 using LMSApi2.Helpers;
 using LMSApi2.Services.FileUploadService;
 using Microsoft.IdentityModel.Tokens;
+using LMSApi2.DTOS.FilesDTO;
+using LMS.DTOS.Announcements;
+using LMS.DTOS.FileDto;
 
 namespace LMSApi2.Controllers
 {
@@ -184,6 +188,70 @@ namespace LMSApi2.Controllers
             //          Console.WriteLine(val);
             return Ok(new {Accouncement = announcement , Count= fileUploaded }); 
         }
+
+
+
+        [HttpPost("upload/web/class/{id}")]
+        public async Task<IActionResult> uploadFileWeb(string id, AddAnnouncementDTO dto )
+        {
+      
+            Console.WriteLine(dto.attachedFiles.Count);
+           
+
+            AnnouncementType announcementType =dto.announcementType == "ASSIGNMENT" ? AnnouncementType.ASSIGNMENT : (dto.announcementType == "ANNOUNCEMENT" ? AnnouncementType.ANNOUNCEMENT : throw new APIError("Announcement type is incorrect"));
+            if (dto.title.IsNullOrEmpty())
+            {
+                throw new APIError("title is not provided");
+            }
+           
+
+            DateTime dueDate = DateTime.Parse(dto.dueDate.ToString());
+            if (dueDate == null)
+            {
+                throw new APIError("Invlaid datetime format");
+            }
+            AnnouncementCreateDTO annoucementDTO = new AnnouncementCreateDTO()
+            {
+                announcementType = announcementType,
+                Description = dto.description,
+                DueDate = dueDate,
+                Title = dto.title
+
+
+
+
+            };
+            int.TryParse(id, out int cid);
+            if (cid == 0)
+            {
+                throw new APIError("no such class exists");
+            }
+            Console.WriteLine("saving anbnouncemnt");
+            AnnouncementResponse announcement = _service.addAnnouncementInClass(cid, annoucementDTO);
+            if (announcement == null)
+            {
+                throw new APIError("Error creating announcement");
+            }
+            Console.WriteLine("created announcemnt" + announcement.AnnouncementId.ToString());
+            int fileUploaded = 0;
+            foreach (FileDTO file in dto.attachedFiles)
+            {
+                bool result = await _uploadService.uploadFile1(announcement.AnnouncementId, file);
+                if (result == true)
+                {
+                    fileUploaded++;
+
+                }
+            }
+
+
+
+
+            //          Console.WriteLine(val);
+            return Ok(new { Accouncement = announcement, Count = fileUploaded });
+        }
+
+
 
 
     }
