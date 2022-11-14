@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 
 using System.IO;
 using Microsoft.EntityFrameworkCore;
+using LMS.DTOS.FileDto;
 
 namespace LMSApi2.Services.FileUploadService
 {
@@ -58,6 +59,7 @@ namespace LMSApi2.Services.FileUploadService
                 return true;
             }
             catch (Exception ex) {
+                Console.WriteLine(ex.InnerException?.Message);
                 Console.WriteLine(ex.StackTrace);
                 throw new APIError(ex.Message);
                 
@@ -66,6 +68,62 @@ namespace LMSApi2.Services.FileUploadService
 
 
         }
+
+
+        public async Task<bool> uploadFile1(int announcementId, FileDTO file)
+        {
+
+            try
+            {
+                Console.WriteLine(Path.GetFullPath(options.Value.SaveFolderPath));
+                string rootPath = Directory.GetCurrentDirectory();
+                string savePath = rootPath + @"/" + options.Value.SaveFolderPath;
+                string finalFilePath = savePath + @"/" + file.FileName;
+                Console.WriteLine(Directory.GetCurrentDirectory());
+                if (!Directory.Exists(Path.GetFullPath(options.Value.SaveFolderPath)))
+                {
+
+                    Directory.CreateDirectory(savePath);
+                }
+                MemoryStream stream = new MemoryStream(file.Data);
+
+                using (FileStream fs = File.Create(finalFilePath))
+                {
+                    await stream.CopyToAsync(fs);
+                    fs.Flush();
+
+                }
+
+                //save to database
+                Announcement announcement = await dataContext.Announcements.Where(el => (el.AnnouncementId == announcementId)).Include("AnnouncementFiles").FirstOrDefaultAsync();
+                if (announcement == null)
+                {
+                    Console.WriteLine("null");
+
+                }
+                Console.Write(announcement.AnnouncementFiles.Count);
+                announcement.AnnouncementFiles.Add(new AnnouncementFile()
+                {
+                    FileName = file.FileName,
+                    MimeType = file.MimeType,
+                    FilePath = finalFilePath,
+
+                });
+                dataContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException?.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new APIError(ex.Message);
+
+            }
+
+
+
+        }
+
 
         public Task<AnnouncementFile> getFile(string filename) {
             var file = dataContext.AnnouncementFile.Where(el => el.FileName == filename).FirstAsync();
