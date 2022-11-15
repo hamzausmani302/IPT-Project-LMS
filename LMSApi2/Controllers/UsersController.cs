@@ -33,11 +33,11 @@ namespace LMSApi2.Controllers
             _fileService = fileService;
         }
 
-        [AllowAnonymous]
-        [HttpPatch("[action]")]
-        public IActionResult Authenticate(AuthenticateRequest model) {
-            var response = _userService.Authenticate(model);
-            return Ok(response);
+        [Authorize]
+        [HttpGet("[action]")]
+        public IActionResult Authenticate() {
+            
+            return Ok(new { Message="Access Granted"});
         }
 
         [Authorize(Role.Admin)]

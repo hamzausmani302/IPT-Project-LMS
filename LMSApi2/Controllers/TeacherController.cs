@@ -34,6 +34,14 @@ namespace LMSApi2.Controllers
             _classService = classService;
             _uploadService = fileUploadService;
         }
+        [Authorize]
+        [HttpGet("[action]")]
+        public IActionResult Authenticate()
+        {
+
+            return Ok(new { Message = "Access Granted" });
+        }
+
 
         [Authorize]
         [HttpGet("annoucements/class/{id}")]
