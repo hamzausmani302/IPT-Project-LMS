@@ -1,4 +1,5 @@
 ﻿using LMSApi2.Authorization;
+using LMSApi2.DTOS.Announcements;
 using LMSApi2.DTOS.Users;
 using LMSApi2.Helpers;
 using LMSApi2.Models;
@@ -56,6 +57,20 @@ namespace LMSApi2.Services.Users
             _context.SaveChanges();
             
            
+        }
+        public async Task<List<SubmissionResponseDTO>> GetAllAssignmentFilesOfAUser(int announcementId , User user) {
+            List<SubmissionFile> submissions=  await _context.SubmissionFile.Where(el => (el.AnnouncementId == announcementId && el.StudentId == user.UserId)).ToListAsync();
+            if (submissions == null) {
+                return null;
+            }
+            List<SubmissionResponseDTO> response = new List<SubmissionResponseDTO>();
+            foreach (SubmissionFile submission in submissions) {
+                response.Add(new SubmissionResponseDTO(submission));
+
+            }
+
+
+            return response;
         }
     }
 }

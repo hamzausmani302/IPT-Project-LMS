@@ -12,6 +12,7 @@ using LMSApi2.DTOS.Announcements;
 using Microsoft.Extensions.Options;
 using LMSApi2.Services.FileUploadService;
 using System.Net;
+using LMS.DTOS.FileDto;
 
 namespace LMSApi2.Controllers
 {
@@ -101,12 +102,7 @@ namespace LMSApi2.Controllers
         }
 
 
-        [HttpGet("Test")]
-        public IActionResult Test()
-        {
-            _userService.Test();
-            return Ok();
-        }
+      
 
         [Authorize]
         [HttpPut("add/class/{code}")]
@@ -137,11 +133,23 @@ namespace LMSApi2.Controllers
 
         [HttpGet("/Files/{filename}")]
 
-        public IActionResult getAnnouncementFile(string filename) {
-            if (filename.Contains("/") || filename.Contains(@"\")) {
+        public IActionResult getAnnouncementFile([FromQuery] bool submissions , string filename) {
+            Console.WriteLine(filename);
+            string decodedFileName = System.Web.HttpUtility.UrlDecode(filename);
+            Console.WriteLine(decodedFileName);
+            Console.WriteLine("submssion" + submissions);
+            if (decodedFileName.Contains("/") || decodedFileName.Contains(@"\")) {
                 return BadRequest();
             }
-            string constructedFilePath = Path.GetFullPath(Path.Combine(settings.Value.SaveFolderPath, filename));
+        
+            string constructedFilePath = settings.Value.SaveFolderPath;
+            if (submissions)
+            {
+                constructedFilePath = Path.Combine( constructedFilePath, "submissions");
+            }
+            constructedFilePath = Path.GetFullPath(Path.Combine(constructedFilePath, decodedFileName));
+            
+            Console.WriteLine(constructedFilePath);
             if (!FileUtils.isFileExist(constructedFilePath)) {
                 return NotFound();
             }
@@ -151,32 +159,59 @@ namespace LMSApi2.Controllers
 
             return File(stream , "application/octet-stream");   
         }
+      
 
         [Authorize]
         [HttpPost("upload/assignment/{id}")]
-        public async  Task<IActionResult> uploadAssignment(string id , [FromForm] List<IFormFile> fileToUpload) {
-
-            IFormCollection collection = HttpContext.Request.Form;
+        public async  Task<IActionResult> uploadAssignment(string id ,  SubmissionFilesDTO submissionFiles) {
+            List<FileDTO> fileToUpload = submissionFiles.fileToUpload;
+           // Console.WriteLine($"info - 1 : {id}");
+            
             User user = HttpContext.Items["User"] as User;
+
+           // Console.WriteLine($"info - 2 - userid -  : {user.UserId}");
             int.TryParse(id, out int cid);
-            if (cid == 0 || !_classService.isClassExists(cid))          //check if user enrolled in class also
+            if (cid == 0 )          //check if user enrolled in class also
             {
                 throw new APIError("no such class exists");
             }
             int successfulFileUploaded = 0;
-            foreach (IFormFile file in fileToUpload)
+            foreach (FileDTO file in fileToUpload)
             {
                 try
                 {
-                    await _fileService.uploadSubmissionFile(cid, file, user);
+                    /*MemoryStream memoryStream = new MemoryStream();
+                    file.CopyTo(memoryStream);*/
+                    await _fileService.uploadSubmissionFile(cid, new LMS.DTOS.FileDto.FileDTO() { FileName=file.FileName , MimeType=file.MimeType , Data=file.Data}, user);
                     successfulFileUploaded++;
                 }
                 catch (Exception) {
                     continue;
                 }
             }
+
+            //Console.WriteLine($"info3 - end : {id}");
             return new ObjectResult(new { Success = successfulFileUploaded, Failed = (fileToUpload.Count - successfulFileUploaded) }) { StatusCode=(int)HttpStatusCode.OK};
 
+        }
+
+
+        [Authorize]
+        [HttpGet("assignments/{id}")]
+        public async Task<IActionResult> GetAllAssignmentsFileOfUser(string id) {
+            User user = HttpContext.Items["User"] as User;
+            bool isSuccess = int.TryParse(id, out int aid);
+            if (!isSuccess) {
+                return BadRequest();
+            }
+
+
+            List<SubmissionResponseDTO> submissions = await _userService.GetAllAssignmentFilesOfAUser(aid , user);
+            if (submissions == null || submissions.Count == 0) {
+                return NotFound();
+            }
+            return Ok(submissions);
+        
         }
     }
 }

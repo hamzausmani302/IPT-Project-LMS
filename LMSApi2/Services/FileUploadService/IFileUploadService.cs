@@ -9,7 +9,7 @@ namespace LMSApi2.Services.FileUploadService
         public Task<bool> uploadFile1(int announcementId, FileDTO file);
 
 
-        public Task uploadSubmissionFile(int announcementId , IFormFile file , User user);
+        public Task uploadSubmissionFile(int announcementId ,FileDTO file , User user);
 
         public Task<AnnouncementFile> getFile(string filename);
     }
