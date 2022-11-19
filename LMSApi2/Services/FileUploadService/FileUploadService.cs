@@ -53,7 +53,6 @@ namespace LMSApi2.Services.FileUploadService
                    FileName = file.FileName,
                    MimeType=  file.ContentType,
                    FilePath = finalFilePath,
-                  
                 });
                 dataContext.SaveChanges();
                 return true;
@@ -133,7 +132,7 @@ namespace LMSApi2.Services.FileUploadService
 
        
 
-        public async  Task uploadSubmissionFile(int announcementId, IFormFile file , User user) {
+        public async  Task uploadSubmissionFile(int announcementId, FileDTO file , User user) {
             Announcement currentAnnouncement =await dataContext.Announcements.FindAsync(announcementId);
             if (currentAnnouncement == null) {
                 throw new NotFoundException("No such announcement exists");
@@ -141,7 +140,7 @@ namespace LMSApi2.Services.FileUploadService
 
             string rootPath = Directory.GetCurrentDirectory();
             string savePath = rootPath + @"/" + options.Value.SaveFolderPath;
-            string finalFilePath = savePath + @"/" + file.FileName;
+            string finalFilePath = savePath + @"/submissions/" + file.FileName;
 
             Console.WriteLine(Directory.GetCurrentDirectory());
             if (!Directory.Exists(Path.GetFullPath(options.Value.SaveFolderPath)))
@@ -152,15 +151,14 @@ namespace LMSApi2.Services.FileUploadService
             
                 using (FileStream fs = File.Create(finalFilePath))
                 {
-                    await file.CopyToAsync(fs);
-                    fs.Flush();
+                fs.Write(file.Data, 0, file.Data.Length);
 
                 }
                 SubmissionFile fileToSubmit = new SubmissionFile()
                 {
                     FileName = file.FileName,
                     FilePath = finalFilePath,
-                    MimeType = file.ContentType,
+                    MimeType = file.MimeType,
                     Announcement = currentAnnouncement,
                     User = user
 
