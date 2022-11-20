@@ -62,3 +62,9 @@ E:\dotnet work\LMSApi2\LMSApi2\obj\Debug\net6.0\LMSApi2.genruntimeconfig.cache
 E:\dotnet work\LMSApi2\LMSApi2\obj\Debug\net6.0\ref\LMSApi2.dll
 E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Humanizer.dll
 E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Azure.Core.dll
+E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Azure.Storage.Blobs.dll
+E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Azure.Storage.Common.dll
+E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Microsoft.Bcl.AsyncInterfaces.dll
+E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\System.IO.Hashing.dll
+E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\System.Memory.Data.dll
