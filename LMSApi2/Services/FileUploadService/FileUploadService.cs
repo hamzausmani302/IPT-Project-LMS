@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
 using LMS.DTOS.FileDto;
+using Azure.Storage.Blobs;
 
 namespace LMSApi2.Services.FileUploadService
 {
@@ -127,9 +128,36 @@ namespace LMSApi2.Services.FileUploadService
         public Task<AnnouncementFile> getFile(string filename) {
             var file = dataContext.AnnouncementFile.Where(el => el.FileName == filename).FirstAsync();
             return file;
+            
         }
 
+        public string getFileName(FileDTO file) {
+            return $"{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds().ToString()}_{file.FileName}";
+        }
 
+        public async Task uploadFileToAzure(FileDTO file , string filePrefix) {
+
+            try
+            {
+                string connectionString = options.Value.AzureWebJobsStorage;
+                string ContainerName = options.Value.ContainerName;
+                BlobContainerClient container = new BlobContainerClient(connectionString, ContainerName);
+
+                
+
+                
+                BlobClient client = container.GetBlobClient(filePrefix + "_"+ file.FileName);
+
+                MemoryStream stream = new MemoryStream(file.Data);
+                await client.UploadAsync(stream);
+            }
+            catch (Exception err) {
+                Console.WriteLine(err.Message);
+                throw err;                
+            }
+           
+        }
+        
        
 
         public async  Task uploadSubmissionFile(int announcementId, FileDTO file , User user) {
@@ -137,7 +165,16 @@ namespace LMSApi2.Services.FileUploadService
             if (currentAnnouncement == null) {
                 throw new NotFoundException("No such announcement exists");
             }
-
+            /*Console.WriteLine("error here 1" + file.FileName);
+            try
+            {
+                await uploadFileToAzure(file, getFileName(file));
+            }
+            catch (Exception)
+            {
+                throw new APIError("Failed to upload file");
+            }*/
+       /*     Console.WriteLine("error here 2");*/
             string rootPath = Directory.GetCurrentDirectory();
             string savePath = rootPath + @"/" + options.Value.SaveFolderPath;
             string finalFilePath = savePath + @"/submissions/" + file.FileName;

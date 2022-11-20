@@ -28,6 +28,10 @@ namespace LMSApi2.Models
         [JsonIgnore]
         public virtual User User { get; set; }
 
+        /*public DateTime CreatedAt { get; set; }
+        public string? remoteName { get; set; }*/
+
+
 
 
 
