@@ -162,13 +162,13 @@ namespace LMSApi2.Controllers
       
 
         [Authorize]
-        [HttpPost("upload/assignment/{id}")]
-        public async  Task<IActionResult> uploadAssignment(string id ,  SubmissionFilesDTO submissionFiles) {
+        [HttpPost("upload/web/assignment/{id}")]
+        public async  Task<IActionResult> uploadAssignment(string id , SubmissionFilesDTO submissionFiles) {
             List<FileDTO> fileToUpload = submissionFiles.fileToUpload;
            // Console.WriteLine($"info - 1 : {id}");
             
             User user = HttpContext.Items["User"] as User;
-
+            Console.WriteLine("test");
            // Console.WriteLine($"info - 2 - userid -  : {user.UserId}");
             int.TryParse(id, out int cid);
             if (cid == 0 )          //check if user enrolled in class also
@@ -194,6 +194,44 @@ namespace LMSApi2.Controllers
             return new ObjectResult(new { Success = successfulFileUploaded, Failed = (fileToUpload.Count - successfulFileUploaded) }) { StatusCode=(int)HttpStatusCode.OK};
 
         }
+
+
+        [Authorize]
+        [HttpPost("upload/mobile/assignment/{id}")]
+        public async Task<IActionResult> uploadAssignmentMobile(string id, [FromForm] List<IFormFile> fileToUpload)
+        {
+           
+            // Console.WriteLine($"info - 1 : {id}");
+
+            User user = HttpContext.Items["User"] as User;
+            Console.WriteLine("test");
+            // Console.WriteLine($"info - 2 - userid -  : {user.UserId}");
+            int.TryParse(id, out int cid);
+            if (cid == 0)          //check if user enrolled in class also
+            {
+                throw new APIError("no such class exists");
+            }
+            int successfulFileUploaded = 0;
+            foreach (IFormFile file in fileToUpload)
+            {
+                try
+                {
+                    MemoryStream memoryStream = new MemoryStream();
+                    file.CopyTo(memoryStream);
+                    await _fileService.uploadSubmissionFile(cid, new LMS.DTOS.FileDto.FileDTO() { FileName = file.FileName, MimeType = file.ContentType, Data = memoryStream.ToArray()}, user);
+                    successfulFileUploaded++;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            //Console.WriteLine($"info3 - end : {id}");
+            return new ObjectResult(new { Success = successfulFileUploaded, Failed = (fileToUpload.Count - successfulFileUploaded) }) { StatusCode = (int)HttpStatusCode.OK };
+
+        }
+
 
 
         [Authorize]
