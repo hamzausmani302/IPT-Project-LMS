@@ -197,8 +197,9 @@ namespace LMSApi2.Services.FileUploadService
                     FilePath = finalFilePath,
                     MimeType = file.MimeType,
                     Announcement = currentAnnouncement,
-                    User = user
-
+                    User = user,
+                    CreatedAt = DateTime.Now,
+                    remoteName = this.getFileName(file)
                 };
                 await dataContext.SubmissionFile.AddAsync(fileToSubmit);
                 await dataContext.SaveChangesAsync();

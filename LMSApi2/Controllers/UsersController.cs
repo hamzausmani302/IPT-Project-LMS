@@ -201,11 +201,11 @@ namespace LMSApi2.Controllers
         public async Task<IActionResult> uploadAssignmentMobile(string id, [FromForm] List<IFormFile> fileToUpload)
         {
            
-            // Console.WriteLine($"info - 1 : {id}");
+            
 
             User user = HttpContext.Items["User"] as User;
             Console.WriteLine("test");
-            // Console.WriteLine($"info - 2 - userid -  : {user.UserId}");
+            
             int.TryParse(id, out int cid);
             if (cid == 0)          //check if user enrolled in class also
             {
@@ -218,12 +218,17 @@ namespace LMSApi2.Controllers
                 {
                     MemoryStream memoryStream = new MemoryStream();
                     file.CopyTo(memoryStream);
-                    await _fileService.uploadSubmissionFile(cid, new LMS.DTOS.FileDto.FileDTO() { FileName = file.FileName, MimeType = file.ContentType, Data = memoryStream.ToArray()}, user);
+                    await _fileService.uploadSubmissionFile(cid, new LMS.DTOS.FileDto.FileDTO() { FileName = file.FileName, MimeType = file.ContentType, Data = memoryStream.ToArray() }, user);
                     successfulFileUploaded++;
                 }
-                catch (Exception)
+                catch (NotFoundException e) {
+                    throw new NotFoundException("No such announcement exisits");
+                }
+
+                catch (Exception e)
                 {
-                    continue;
+
+                    Console.WriteLine(e.Message);
                 }
             }
 
