@@ -131,35 +131,40 @@ namespace LMSApi2.Controllers
             return Ok(announcements);
         }
 
-        [HttpGet("/Files/{filename}")]
+        [HttpGet("/annoouncement/Files/{id}")]
 
-        public IActionResult getAnnouncementFile([FromQuery] bool submissions , string filename) {
-            Console.WriteLine(filename);
-            string decodedFileName = System.Web.HttpUtility.UrlDecode(filename);
-            Console.WriteLine(decodedFileName);
-            Console.WriteLine("submssion" + submissions);
-            if (decodedFileName.Contains("/") || decodedFileName.Contains(@"\")) {
+        public IActionResult getAnnouncementFile( string id) {
+            //check if user enrolled in class
+            //retrieve files 
+
+
+            return File(new MemoryStream() , "application/octet-stream");   
+        }
+        [Authorize]
+        [HttpGet("/submissions/Files/{id}")]
+        public async  Task<IActionResult> getUserSubmissionsFile( string id) {
+            //check whether file exists
+            User user = HttpContext.Items["User"] as User;
+            if ( !int.TryParse(id, out int fid)) {
                 return BadRequest();
             }
-        
-            string constructedFilePath = settings.Value.SaveFolderPath;
-            if (submissions)
-            {
-                constructedFilePath = Path.Combine( constructedFilePath, "submissions");
-            }
-            constructedFilePath = Path.GetFullPath(Path.Combine(constructedFilePath, decodedFileName));
-            
-            Console.WriteLine(constructedFilePath);
-            if (!FileUtils.isFileExist(constructedFilePath)) {
-                return NotFound();
-            }
-            FileStream stream = new FileStream(constructedFilePath, FileMode.Open, FileAccess.Read);
-            
+           
+            //fetch file data from DB
+            //retunr not found if donot exist
+            SubmissionFile submittedFile  = await  _fileService.retrieveFileDataFromDB(fid);
 
+            //check whether user is allowed to access this file
+            if (submittedFile.StudentId != user.UserId) {
+                return Unauthorized();
+            }
+            //retrieve file from AZure APP Service
+            FileDTO file =  await _fileService.retrieveFile(submittedFile);
+/*
+            return File(file.Data, file.MimeType);*/            //for retrurning contents of file in browser
 
-            return File(stream , "application/octet-stream");   
+            return File( file.Data  , file.MimeType , file.FileName);
         }
-      
+
 
         [Authorize]
         [HttpPost("upload/web/assignment/{id}")]

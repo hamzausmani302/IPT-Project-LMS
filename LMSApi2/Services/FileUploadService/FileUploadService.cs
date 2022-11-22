@@ -30,7 +30,21 @@ namespace LMSApi2.Services.FileUploadService
                 string rootPath = Directory.GetCurrentDirectory();
                 string savePath = rootPath + @"/" + options.Value.SaveFolderPath;
                 string finalFilePath = savePath + @"/" + file.FileName;
-                Console.WriteLine(Directory.GetCurrentDirectory());
+                MemoryStream stream = new MemoryStream();
+                await file.CopyToAsync(stream);
+                FileDTO fileDTO = new FileDTO() { Data =stream.ToArray() , FileName = file.FileName , MimeType = file.ContentType};
+                string remoteName = getFileName(fileDTO);
+                Console.WriteLine("error here 1" + file.FileName);
+                try
+                {
+                    await uploadFileToAzure(fileDTO, remoteName);
+                }
+                catch (Exception)
+                {
+                    throw new APIError("Failed to upload file");
+                }
+
+
                 if (!Directory.Exists(Path.GetFullPath(options.Value.SaveFolderPath)))
                 {
 
@@ -80,6 +94,19 @@ namespace LMSApi2.Services.FileUploadService
                 string savePath = rootPath + @"/" + options.Value.SaveFolderPath;
                 string finalFilePath = savePath + @"/" + file.FileName;
                 Console.WriteLine(Directory.GetCurrentDirectory());
+
+                string remoteName = getFileName(file);
+                Console.WriteLine("error here 1" + file.FileName);
+                try
+                {
+                    await uploadFileToAzure(file, remoteName);
+                }
+                catch (Exception)
+                {
+                    throw new APIError("Failed to upload file");
+                }
+
+
                 if (!Directory.Exists(Path.GetFullPath(options.Value.SaveFolderPath)))
                 {
 
@@ -98,7 +125,7 @@ namespace LMSApi2.Services.FileUploadService
                 Announcement announcement = await dataContext.Announcements.Where(el => (el.AnnouncementId == announcementId)).Include("AnnouncementFiles").FirstOrDefaultAsync();
                 if (announcement == null)
                 {
-                    Console.WriteLine("null");
+                    throw new NotFoundException("announcement not found");
 
                 }
                 Console.Write(announcement.AnnouncementFiles.Count);
@@ -131,30 +158,34 @@ namespace LMSApi2.Services.FileUploadService
             
         }
 
-        public string getFileName(FileDTO file) {
+        private string getFileName(FileDTO file) {
             return $"{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds().ToString()}_{file.FileName}";
         }
 
-        public async Task uploadFileToAzure(FileDTO file , string filePrefix) {
+        private string getAssignmentFileName(string remoteName) {
+            string? name  = remoteName.Replace("/", "").Replace(@"\" , "");
+            string path = Path.Combine("submissions", name);
+            return path;
+        }
 
-            try
-            {
+        public async Task uploadFileToAzure(FileDTO file , string remoteName , bool isAssignment=false) {
+
+          
                 string connectionString = options.Value.AzureWebJobsStorage;
                 string ContainerName = options.Value.ContainerName;
                 BlobContainerClient container = new BlobContainerClient(connectionString, ContainerName);
 
-                
 
-                
-                BlobClient client = container.GetBlobClient(filePrefix + "_"+ file.FileName);
+            string saveFileName = remoteName;
+            if (isAssignment) { 
+                saveFileName = getAssignmentFileName(remoteName);
+            }
 
-                MemoryStream stream = new MemoryStream(file.Data);
-                await client.UploadAsync(stream);
-            }
-            catch (Exception err) {
-                Console.WriteLine(err.Message);
-                throw err;                
-            }
+            BlobClient client = container.GetBlobClient(saveFileName);
+
+            MemoryStream stream = new MemoryStream(file.Data);
+            await client.UploadAsync(stream);
+                
            
         }
         
@@ -165,21 +196,22 @@ namespace LMSApi2.Services.FileUploadService
             if (currentAnnouncement == null) {
                 throw new NotFoundException("No such announcement exists");
             }
-            /*Console.WriteLine("error here 1" + file.FileName);
+            string remoteName = getFileName(file);
+            bool isAssignment = true;
             try
             {
-                await uploadFileToAzure(file, getFileName(file));
+                await uploadFileToAzure(file, remoteName ,isAssignment);
             }
             catch (Exception)
             {
                 throw new APIError("Failed to upload file");
-            }*/
-       /*     Console.WriteLine("error here 2");*/
+            }
+            /*     Console.WriteLine("error here 2");*/
             string rootPath = Directory.GetCurrentDirectory();
             string savePath = rootPath + @"/" + options.Value.SaveFolderPath;
             string finalFilePath = savePath + @"/submissions/" + file.FileName;
 
-            Console.WriteLine(Directory.GetCurrentDirectory());
+            
             if (!Directory.Exists(Path.GetFullPath(options.Value.SaveFolderPath)))
             {
 
@@ -199,7 +231,7 @@ namespace LMSApi2.Services.FileUploadService
                     Announcement = currentAnnouncement,
                     User = user,
                     CreatedAt = DateTime.Now,
-                    remoteName = this.getFileName(file)
+                    remoteName = remoteName
                 };
                 await dataContext.SubmissionFile.AddAsync(fileToSubmit);
                 await dataContext.SaveChangesAsync();
@@ -209,5 +241,21 @@ namespace LMSApi2.Services.FileUploadService
 
         }
 
+        public async Task<SubmissionFile> retrieveFileDataFromDB(int fileId ) {
+            SubmissionFile submissionFile =  await dataContext.SubmissionFile.FindAsync(fileId);
+            if (submissionFile == null) {
+                throw new NotFoundException("no such file exists");
+            }
+            return submissionFile;
+        }
+
+        public async  Task<FileDTO> retrieveFile(SubmissionFile file) {
+            string rootPath = Directory.GetCurrentDirectory();
+            string savePath = Path.Combine(rootPath ,  options.Value.SaveFolderPath);
+            string finalFilePath = Path.Combine(savePath , "submissions" , file.FileName);
+
+            byte[] fileBytes = await File.ReadAllBytesAsync(finalFilePath);
+            return new FileDTO() { FileName = file.FileName , MimeType = file.MimeType , Data = fileBytes };
+        }
     }
 }
