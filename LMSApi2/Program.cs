@@ -11,12 +11,32 @@ using System.Text.Json.Serialization;
 using LMSApi2.Services.ClassServices;
 using LMSApi2.Services.FileUploadService;
 using LMSApi2.Services.CourseService;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+////////////////////creating directories for app  /// remove this when data goes to azure
+
+string rootPath = Directory.GetCurrentDirectory();
+string savePath = rootPath + @"/" + builder.Configuration.GetSection("AppSettings")["saveFolderPath"];
+if (!Directory.Exists(Path.GetFullPath(builder.Configuration.GetSection("AppSettings")["saveFolderPath"])))
+{
+
+    Directory.CreateDirectory(savePath);
+}
+if (!Directory.Exists(Path.Combine(Path.GetFullPath(builder.Configuration.GetSection("AppSettings")["saveFolderPath"]) , "submissions"))) 
+{
+
+    Directory.CreateDirectory(Path.Combine(savePath , "submissions"));
+}
+
+//////////////////////////////////
+
+
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddCors();
 

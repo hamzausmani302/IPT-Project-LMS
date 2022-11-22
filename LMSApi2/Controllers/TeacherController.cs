@@ -196,6 +196,14 @@ namespace LMSApi2.Controllers
             //          Console.WriteLine(val);
             return Ok(new {Accouncement = announcement , Count= fileUploaded }); 
         }
+        [Authorize]
+        [HttpGet("/File/{id}")]
+        public async Task<IActionResult> retrieveFile(int id) {
+
+            //to be implemented
+
+            return Ok();
+        }
 
 
 

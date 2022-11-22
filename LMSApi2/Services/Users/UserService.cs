@@ -72,5 +72,13 @@ namespace LMSApi2.Services.Users
 
             return response;
         }
+
+        public async Task<Announcement> isAnnouncementExists(int announcementId) {
+            Announcement announcement = await  _context.Announcements.FindAsync(announcementId);
+            if (announcement == null) {
+                throw new NotFoundException("announcement donot exist");
+            }
+            return announcement;
+        }
     }
 }

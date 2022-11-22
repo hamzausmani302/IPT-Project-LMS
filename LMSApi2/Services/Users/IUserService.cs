@@ -1,4 +1,5 @@
-﻿using LMSApi2.DTOS.Announcements;
+﻿using LMS.DTOS.FileDto;
+using LMSApi2.DTOS.Announcements;
 using LMSApi2.DTOS.Users;
 using LMSApi2.Models;
 
@@ -13,7 +14,9 @@ namespace LMSApi2.Services.Users
 
         public Task<List<SubmissionResponseDTO>> GetAllAssignmentFilesOfAUser(int announcementId , User user);
 
-       
+        public Task<Announcement> isAnnouncementExists(int announcementId);
+
+
         public void Test();
 
         
