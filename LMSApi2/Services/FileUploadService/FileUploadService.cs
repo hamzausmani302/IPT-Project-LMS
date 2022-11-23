@@ -167,6 +167,51 @@ namespace LMSApi2.Services.FileUploadService
             string path = Path.Combine("submissions", name);
             return path;
         }
+        private async Task<FileDTO> retrieveFileFromAzure(AnnouncementFile file)
+        {
+            string connectionString = options.Value.AzureWebJobsStorage;
+            string ContainerName = options.Value.ContainerName;
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+            //Console.WriteLine(file.remoteName);
+            BlobClient blobClient = containerClient.GetBlobClient(file.FileName);
+            if (await blobClient.ExistsAsync())
+            {
+                var response = await blobClient.DownloadAsync();
+                MemoryStream stream = new MemoryStream();
+                await response.Value.Content.CopyToAsync(stream);
+
+                FileDTO fileDTO = new FileDTO() { FileName = file.FileName, MimeType = file.MimeType, Data = stream.ToArray() };
+                return fileDTO;
+            }
+            else
+            {
+                throw new APIError("Server Error");
+            }
+        }
+
+
+        private async Task<FileDTO> retrieveFileFromAzure(SubmissionFile file) {
+            string connectionString = options.Value.AzureWebJobsStorage;
+            string ContainerName = options.Value.ContainerName;
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+            //Console.WriteLine(file.remoteName);
+            Console.WriteLine(getAssignmentFileName(file.remoteName));
+            BlobClient blobClient = containerClient.GetBlobClient(getAssignmentFileName(file.remoteName));
+            if (await blobClient.ExistsAsync())
+            {
+                var response = await blobClient.DownloadAsync();
+                MemoryStream stream = new MemoryStream();
+                await response.Value.Content.CopyToAsync(stream);
+
+                FileDTO fileDTO = new FileDTO() { FileName = file.FileName, MimeType = file.MimeType, Data = stream.ToArray() };
+                return fileDTO;
+            }
+            else {
+                throw new APIError("Server Error");
+            }
+        }
 
         public async Task uploadFileToAzure(FileDTO file , string remoteName , bool isAssignment=false) {
 
@@ -249,13 +294,31 @@ namespace LMSApi2.Services.FileUploadService
             return submissionFile;
         }
 
-        public async  Task<FileDTO> retrieveFile(SubmissionFile file) {
-            string rootPath = Directory.GetCurrentDirectory();
-            string savePath = Path.Combine(rootPath ,  options.Value.SaveFolderPath);
-            string finalFilePath = Path.Combine(savePath , "submissions" , file.FileName);
+        public async Task<FileDTO> retrieveFile(SubmissionFile file) {
 
-            byte[] fileBytes = await File.ReadAllBytesAsync(finalFilePath);
-            return new FileDTO() { FileName = file.FileName , MimeType = file.MimeType , Data = fileBytes };
+           FileDTO responseFile =  await retrieveFileFromAzure(file);
+            if (responseFile == null) {
+                throw new NotFoundException();
+            }
+            return responseFile;
+        }
+
+
+        public async Task<AnnouncementFile> retrieveAnnouncementFileInfo(int id) {
+            AnnouncementFile announcementfile = await  dataContext.AnnouncementFile.Where(el => el.Id == id).Include("Announcement").Include("Announcement.Classes").FirstAsync();
+            if (announcementfile == null) {
+                throw new NotFoundException();
+            }
+
+            return announcementfile;
+        }
+        public async Task<FileDTO> retrieveFile(AnnouncementFile file) {
+            FileDTO responseFile = await retrieveFileFromAzure(file);
+            if (responseFile == null)
+            {
+                throw new NotFoundException();
+            }
+            return responseFile;
         }
     }
 }

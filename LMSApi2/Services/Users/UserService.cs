@@ -80,5 +80,16 @@ namespace LMSApi2.Services.Users
             }
             return announcement;
         }
+        public bool isUserInClass(int classId, User user) {
+            User _user =  _context.Users.Where(el => user.UserId == el.UserId).Include("Classes").First();
+
+            Console.WriteLine($"ccount = {_user.Classes.Count}");
+            Classes _class = _user.Classes.Find(el=> el.ClassId == classId);
+
+            if (_class == null) {
+                return false;
+            }
+            return true;
+        }
     }
 }

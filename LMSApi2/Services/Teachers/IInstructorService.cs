@@ -23,5 +23,8 @@ namespace LMSApi2.Services.Teachers
 
         public Task<List<AnnouncementResponse>> getAllAssignmentsOfATeacher(Instructor instructor);
 
+        public Task<List<SubmissionFile>> getSubmissionOfStudents(int announcementId);
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace LMSApi2.Helpers
 {
@@ -15,6 +16,14 @@ namespace LMSApi2.Helpers
                 sb.Append(c);
             }
             return sb.ToString();
+        }
+
+        public static int ParseString(string str) {
+            if (int.TryParse(str, out int integerId)) {
+                return integerId;
+            }
+            throw new BadRequestException();
+        
         }
     }
 }

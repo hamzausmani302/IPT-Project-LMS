@@ -16,6 +16,8 @@ namespace LMSApi2.Services.Users
 
         public Task<Announcement> isAnnouncementExists(int announcementId);
 
+        public bool isUserInClass(int classId , User user);
+
 
         public void Test();
 
