@@ -41,6 +41,12 @@ namespace LMSApi2.Helpers
                     case APIError e:
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
+                    case BadRequestException e:
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
+                    case NotAuthorizedException e:
+                        response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        break;
                     default:
                         // unhandled error
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
