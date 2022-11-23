@@ -15,7 +15,7 @@ namespace LMSApi2.Models
 
         public string MimeType { get; set; }
         [Required]
-
+        [JsonIgnore]
         public string FilePath { get; set; }
 
         public int AnnouncementId { get; set; }

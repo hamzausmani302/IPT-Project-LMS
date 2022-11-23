@@ -1,9 +1,7 @@
 ﻿using LMSApi2.Authorization.AuthorizationUser;
-using LMSApi2.Authorization.AuthorizationAnonymous;
 using LMSApi2.DTOS.Users;
 using LMSApi2.Models;
 using LMSApi2.Services.Users;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMSApi2.Services.ClassServices;
 using LMSApi2.DTOS.ClassesDTO;
@@ -13,6 +11,7 @@ using Microsoft.Extensions.Options;
 using LMSApi2.Services.FileUploadService;
 using System.Net;
 using LMS.DTOS.FileDto;
+
 
 namespace LMSApi2.Controllers
 {
@@ -49,7 +48,7 @@ namespace LMSApi2.Controllers
 
         }
 
-        [AllowAnonymous]
+
         [HttpPost("[action]")]
         public IActionResult Login(AuthenticateRequest request) {
             var response = _userService.Authenticate(request);
@@ -130,29 +129,44 @@ namespace LMSApi2.Controllers
 
             return Ok(announcements);
         }
+        [Authorize]
+        [HttpGet("announcements/Files/{id}")]
 
-        [HttpGet("/annoouncement/Files/{id}")]
+        public async Task<IActionResult> getAnnouncementFile( string id) {
+            //retrieve fileinfo
+            Console.WriteLine("test");
+            User user = HttpContext.Items["User"] as User;
+            //validate access to user
+            //return file
+            AnnouncementFile file =await   _fileService.retrieveAnnouncementFileInfo(UtilFunctions.ParseString(id));
+            
+            bool userExist = _userService.isUserInClass(file.Announcement.Classes.ClassId, user);
+            Console.WriteLine(userExist);
+            if (!userExist) {
+                throw new NotAuthorizedException();
+            }
+            FileDTO fileDTO = await _fileService.retrieveFile(file);
+                        
 
-        public IActionResult getAnnouncementFile( string id) {
-            //check if user enrolled in class
-            //retrieve files 
 
 
-            return File(new MemoryStream() , "application/octet-stream");   
+
+            return File(fileDTO.Data , fileDTO.MimeType , file.FileName);   
         }
         [Authorize]
-        [HttpGet("/submissions/Files/{id}")]
+        [HttpGet("submissions/Files/{id}")]
         public async  Task<IActionResult> getUserSubmissionsFile( string id) {
             //check whether file exists
             User user = HttpContext.Items["User"] as User;
             if ( !int.TryParse(id, out int fid)) {
                 return BadRequest();
             }
-           
+            
             //fetch file data from DB
             //retunr not found if donot exist
             SubmissionFile submittedFile  = await  _fileService.retrieveFileDataFromDB(fid);
-
+/*
+            Console.WriteLine(user.UserId);*/
             //check whether user is allowed to access this file
             if (submittedFile.StudentId != user.UserId) {
                 return Unauthorized();

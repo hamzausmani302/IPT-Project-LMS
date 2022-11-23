@@ -16,11 +16,13 @@ using Microsoft.IdentityModel.Tokens;
 using LMSApi2.DTOS.FilesDTO;
 using LMS.DTOS.Announcements;
 using LMS.DTOS.FileDto;
+using Azure.Storage.Blobs.Models;
 
 namespace LMSApi2.Controllers
 {
     [Route("api/teacher/[controller]")]
     [ApiController]
+
     public class TeacherController : ControllerBase
     {
 
@@ -41,6 +43,61 @@ namespace LMSApi2.Controllers
 
             return Ok(new { Message = "Access Granted" });
         }
+        [Authorize]
+        [HttpGet("announcements/Files/{id}")]
+
+        public async Task<IActionResult> getAnnouncementFile(string id)
+        {
+            //retrieve fileinfo
+            Console.WriteLine("test");
+            User user = HttpContext.Items["User"] as User;
+            //validate access to user
+            //return file
+            AnnouncementFile file = await _uploadService.retrieveAnnouncementFileInfo(UtilFunctions.ParseString(id));
+            if (file == null) {
+                return NotFound();
+            }
+            
+            FileDTO fileDTO = await _uploadService.retrieveFile(file);
+
+
+
+
+
+            return File(fileDTO.Data, fileDTO.MimeType, file.FileName);
+        }
+
+
+        [HttpGet("submissions/Files/{id}")]
+        public async Task<IActionResult> getUserSubmissionsFile(string id)
+        {
+            //check whether file exists
+            //User user = HttpContext.Items["User"] as User;
+            if (!int.TryParse(id, out int fid))
+            {
+                return BadRequest();
+            }
+
+            //fetch file data from DB
+            //retunr not found if donot exist
+            SubmissionFile submittedFile = await _uploadService.retrieveFileDataFromDB(fid);
+            /*
+                        Console.WriteLine(user.UserId);*/
+            //check whether user is allowed to access this file
+            
+            /*if (submittedFile.StudentId != user.UserId)
+            {
+                return Unauthorized();
+            }*/
+            
+            //retrieve file from AZure APP Service
+            FileDTO file = await _uploadService.retrieveFile(submittedFile);
+            /*
+                        return File(file.Data, file.MimeType);*/            //for retrurning contents of file in browser
+
+            return File(file.Data, file.MimeType, file.FileName);
+        }
+
 
 
         [Authorize]
@@ -81,7 +138,7 @@ namespace LMSApi2.Controllers
           
             List<ClassDTO> classes = _classService.getClassesOfInstructor(currentUser);
 
-
+           
 
 
             return Ok(classes);
@@ -140,6 +197,17 @@ namespace LMSApi2.Controllers
             
         }
 
+        [Authorize]
+        [HttpGet("assignments/{announcementId}")]
+        public async Task<IActionResult> GetAllAssignmentsOfAnAnnouncement(string announcementID) {
+
+            Instructor instructor = HttpContext.Items["Instructor"] as Instructor;
+
+            List<SubmissionFile> files = await  _service.getSubmissionOfStudents(UtilFunctions.ParseString(announcementID));
+            
+
+            return Ok(files);
+        }
 
         [HttpPost("upload/class/{id}")]
         public async Task<IActionResult> uploadFile(string id , [FromForm]List<IFormFile> fileToUpload) {

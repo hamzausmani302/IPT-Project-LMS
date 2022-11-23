@@ -117,5 +117,10 @@ namespace LMSApi2.Services.Teachers
         
         }
 
+        public async  Task<List<SubmissionFile>> getSubmissionOfStudents(int announcementId) {
+            List<SubmissionFile> submissionFiles = await  _dataContext.SubmissionFile.Where(el => el.AnnouncementId == announcementId).ToListAsync();
+            return submissionFiles;
+
+        }
     }
 }
