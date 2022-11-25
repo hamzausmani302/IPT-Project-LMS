@@ -23,6 +23,12 @@ namespace LMSApi2.Authorization.AuthorizationUser
             logger1.LogInformation("user middleware called");
 
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (token == null)
+            {
+                token = context.Request.Query["AuthToken"];
+
+            }
+            Console.WriteLine("token" + token);
             var userId = jwtUtils.ValidateJwtToken(token);
             logger1.LogInformation(token);
             logger1.LogInformation(userId);

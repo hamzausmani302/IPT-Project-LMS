@@ -138,7 +138,11 @@ namespace LMSApi2.Controllers
             User user = HttpContext.Items["User"] as User;
             //validate access to user
             //return file
-            AnnouncementFile file =await   _fileService.retrieveAnnouncementFileInfo(UtilFunctions.ParseString(id));
+
+            if (!int.TryParse(id , out int aid)) {
+                return NotFound();
+            }
+            AnnouncementFile file =await   _fileService.retrieveAnnouncementFileInfo(aid);
             
             bool userExist = _userService.isUserInClass(file.Announcement.Classes.ClassId, user);
             Console.WriteLine(userExist);
@@ -201,15 +205,20 @@ namespace LMSApi2.Controllers
                 {
                     /*MemoryStream memoryStream = new MemoryStream();
                     file.CopyTo(memoryStream);*/
-                    await _fileService.uploadSubmissionFile(cid, new LMS.DTOS.FileDto.FileDTO() { FileName=file.FileName , MimeType=file.MimeType , Data=file.Data}, user);
+                    await _fileService.uploadSubmissionFile(cid, new LMS.DTOS.FileDto.FileDTO() { FileName = file.FileName, MimeType = file.MimeType, Data = file.Data }, user);
                     successfulFileUploaded++;
                 }
-                catch (Exception) {
+                catch (ValidationException err) {
+                    return new ObjectResult(new { Message = err.Message }) {StatusCode=(int)HttpStatusCode.Forbidden };
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine(err.Message);
                     continue;
                 }
             }
 
-            //Console.WriteLine($"info3 - end : {id}");
+            Console.WriteLine($"info3 - end : {id} {successfulFileUploaded } ");
             return new ObjectResult(new { Success = successfulFileUploaded, Failed = (fileToUpload.Count - successfulFileUploaded) }) { StatusCode=(int)HttpStatusCode.OK};
 
         }
