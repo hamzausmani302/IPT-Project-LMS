@@ -70,3 +70,7 @@ E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\System.IO.Hashing.dll
 E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\System.Memory.Data.dll
 E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Files\submissions\Bifo Industries Ltd.json
 E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Files\submissions\Engro Polymer & Chemical Pref.Share (XD).json
+E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Files\Bifo Industries Ltd.json
+E:\dotnet work\LMSApi2\LMSApi2\bin\Debug\net6.0\Files\submissions\Bifo Industries Ltd (3).json
+E:\dotnet work\LMSApi2\LMSApi2\obj\Debug\net6.0\LMSApi2.RazorAssemblyInfo.cache
+E:\dotnet work\LMSApi2\LMSApi2\obj\Debug\net6.0\LMSApi2.RazorAssemblyInfo.cs

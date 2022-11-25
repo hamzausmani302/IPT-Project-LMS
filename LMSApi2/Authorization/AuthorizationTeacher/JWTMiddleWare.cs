@@ -20,7 +20,15 @@ namespace LMSApi2.Authorization.AuthorizationTeacher
         public async Task Invoke(HttpContext context, IInstructorService instuctorService, IJwtUtils jwtUtils)
         {
             logger1.LogInformation("teacher middleware");
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (token == null) {
+                token = context.Request.Query["AuthToken"];
+                
+            }
+            Console.WriteLine("token" + token);
+
+
+
             var userId = jwtUtils.ValidateJwtTokenTeacher(token);
             logger1.LogInformation(token);
             //logger1.LogInformation(userId);

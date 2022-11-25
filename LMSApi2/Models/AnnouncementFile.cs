@@ -18,6 +18,8 @@ namespace LMSApi2.Models
 
         
         public int AnnouncementId { get; set; }
+        
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         [JsonIgnore]
         public virtual Announcement Announcement { get; set; }          //Navigation reference
 

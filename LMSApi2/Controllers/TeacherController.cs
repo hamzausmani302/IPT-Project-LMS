@@ -67,7 +67,7 @@ namespace LMSApi2.Controllers
             return File(fileDTO.Data, fileDTO.MimeType, file.FileName);
         }
 
-
+        [Authorize]
         [HttpGet("submissions/Files/{id}")]
         public async Task<IActionResult> getUserSubmissionsFile(string id)
         {
@@ -81,6 +81,7 @@ namespace LMSApi2.Controllers
             //fetch file data from DB
             //retunr not found if donot exist
             SubmissionFile submittedFile = await _uploadService.retrieveFileDataFromDB(fid);
+            Console.WriteLine(submittedFile.FileName);
             /*
                         Console.WriteLine(user.UserId);*/
             //check whether user is allowed to access this file

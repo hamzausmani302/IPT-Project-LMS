@@ -14,3 +14,7 @@ build_property.SupportLocalizedComponentNames =
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
 build_property.MSBuildProjectDirectory = E:\dotnet work\LMSApi2\LMSApi2
 build_property._RazorSourceGeneratorDebug = 
+
+[E:/dotnet work/LMSApi2/LMSApi2/Files/submissions/Assignment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = RmlsZXNcc3VibWlzc2lvbnNcQXNzaWdubWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
