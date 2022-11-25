@@ -47,6 +47,9 @@ namespace LMSApi2.Helpers
                     case NotAuthorizedException e:
                         response.StatusCode = (int)HttpStatusCode.Forbidden;
                         break;
+                    case ValidationException e:
+                        response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        break;
                     default:
                         // unhandled error
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
