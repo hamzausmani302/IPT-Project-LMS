@@ -86,14 +86,15 @@ namespace LMSApi2.Services.ClassServices
             .Include("Course")
             .FirstOrDefaultAsync();
             //Console.WriteLine(_class.Users.Count);
+            if (_class == null)
+            {
+                throw new NotFoundException("No such class exists");
+            }
             if (_class.Users.Contains(user)) {
                 throw new APIError("Duplicate Entry. Already enrolled");
             }
 
-                if (_class == null)
-                {
-                    throw new NotFoundException("No such class exists");
-                }
+               
                 ClassDTO dto = new ClassDTO(_class);
                 
                 _class.Users.Add(user);
