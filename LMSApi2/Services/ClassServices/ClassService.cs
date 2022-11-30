@@ -152,6 +152,7 @@ namespace LMSApi2.Services.ClassServices
                 .Include("Classes")
                 .Include("Classes.Instructor")
                 .Include("Classes.Course")
+                .OrderByDescending(a => a.CreatedAt)
                 .ToList();
             List<AnnouncementResponse> announcementDTOs = new List<AnnouncementResponse>();
             foreach (var annoucement in annoucements) {
