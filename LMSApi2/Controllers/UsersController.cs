@@ -107,9 +107,20 @@ namespace LMSApi2.Controllers
         [HttpPut("add/class/{code}")]
         public async Task<IActionResult> addToClass(string code)
         {
+            Console.WriteLine(code);
             User user = HttpContext.Items["User"] as User;
             ClassDTO _class = await _classService.addUserToClass(code, user);
             return new ObjectResult(_class) { StatusCode=(int)HttpStatusCode.Created};
+        }
+
+        [Authorize]
+        [HttpGet("add/class/web/{code}")]
+        public async Task<IActionResult> addToClassWeb(string code)
+        {
+            Console.WriteLine(code);
+            User user = HttpContext.Items["User"] as User;
+            ClassDTO _class = await _classService.addUserToClass(code, user);
+            return new ObjectResult(_class) { StatusCode = (int)HttpStatusCode.Created };
         }
 
         [Authorize]
