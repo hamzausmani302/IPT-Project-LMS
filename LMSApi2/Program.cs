@@ -66,7 +66,7 @@ var app = builder.Build();
         .AllowAnyHeader());
 
     // global error handler
-  //app.UseMiddleware<ErrorHandlerMiddleware>();
+  app.UseMiddleware<ErrorHandlerMiddleware>();
 
     // custom jwt auth middleware
 
