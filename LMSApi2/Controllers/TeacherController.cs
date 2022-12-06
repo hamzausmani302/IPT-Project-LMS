@@ -54,6 +54,7 @@ namespace LMSApi2.Controllers
             //validate access to user
             //return file
             AnnouncementFile file = await _uploadService.retrieveAnnouncementFileInfo(UtilFunctions.ParseString(id));
+            Console.WriteLine(file.FileName);
             if (file == null) {
                 return NotFound();
             }
