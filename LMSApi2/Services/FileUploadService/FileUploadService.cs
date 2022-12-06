@@ -161,13 +161,13 @@ namespace LMSApi2.Services.FileUploadService
 
         private string getFileName(FileDTO file ) {
 
-            return $"{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds().ToString()}_{file.FileName}";
+            return $"{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString()}_{file.FileName}";
         }
 
         private string getFileName(FileDTO file , DateTime createdAt)
         {
 
-            return $"{new DateTimeOffset(createdAt).ToUnixTimeMilliseconds().ToString()}_{file.FileName}";
+            return $"{new DateTimeOffset(createdAt).ToUnixTimeSeconds().ToString()}_{file.FileName}";
         }
         private string getAssignmentFileName(string remoteName) {
             string? name  = remoteName.Replace("/", "").Replace(@"\" , "");
